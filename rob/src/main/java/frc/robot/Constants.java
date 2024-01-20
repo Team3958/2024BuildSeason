@@ -16,8 +16,16 @@ import edu.wpi.first.wpilibj.PneumaticsModuleType;
  */
 public final class Constants {
   public static class OperatorConstants {
-    public static final int kDriverControllerPort = 0;
+    public static final int kDriverControllerPort = 1;
   }
 
-public static final PneumaticsModuleType pcm = null;
+public static final int pcm = 1;
+public static final int XC1 = 0;
+public static final int xcA = 1;
+public static final int xcB = 2;
+public static final int falcon1 = 12;
+public static double kV = 0;
+public static double kP = 0.1;
+public static double kI = 0.000005;
+public static double kD = 0.000025;
 }

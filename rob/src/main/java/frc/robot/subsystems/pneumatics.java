@@ -5,13 +5,14 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 public class pneumatics extends SubsystemBase {
   /** Creates a new pneumatics. */
-  private final DoubleSolenoid piston = new DoubleSolenoid(Constants.pcm, 0,1);
+  private final DoubleSolenoid piston = new DoubleSolenoid(Constants.pcm, PneumaticsModuleType.CTREPCM, 0,1);
 
   public pneumatics() {
 
