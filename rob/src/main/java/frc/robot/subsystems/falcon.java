@@ -26,12 +26,13 @@ public class falcon extends SubsystemBase {
   
   private TalonFXConfiguration t = new TalonFXConfiguration();
   private double vel = 0;
+  private double pose;
   private PIDController controller = new PIDController(Constants.kP, Constants.kI, Constants.kD);
   private double volts = 0;
 
   public falcon() {
-    t.Voltage.PeakForwardVoltage = 10;
-    t.Voltage.PeakForwardVoltage = 10;
+    t.Voltage.PeakForwardVoltage = 12;
+    t.Voltage.PeakForwardVoltage = 12;
     var slot0Configs = new Slot0Configs();
     motor.getConfigurator().apply(t);
     updatePID();
@@ -49,7 +50,9 @@ public class falcon extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
     vel = motor.getVelocity().getValueAsDouble();
+    pose = motor.getPosition().getValueAsDouble();
     SmartDashboard.putNumber("velocity", vel);
+    SmartDashboard.putNumber("posiotion", pose);
     SmartDashboard.putNumber("P", Constants.kP);
     SmartDashboard.putNumber("I", Constants.kI);
     SmartDashboard.putNumber("D", Constants.kD);
@@ -65,6 +68,9 @@ public class falcon extends SubsystemBase {
   public void runMotor(double speedt){
     volts = controller.calculate(vel, speedt);
     motor.setVoltage(volts);
+  }
+  public void runMotorPose(double p){
+    motor.setVoltage(controller.calculate(pose, p));
   }
 
   public void zeroMotor(){
