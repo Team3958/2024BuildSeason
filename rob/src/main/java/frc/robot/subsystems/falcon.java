@@ -9,6 +9,7 @@ import java.util.ResourceBundle.Control;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.fasterxml.jackson.databind.deser.std.ContainerDeserializerBase;
 import com.fasterxml.jackson.databind.ser.std.StdKeySerializers.Default;
 
@@ -33,7 +34,7 @@ public class falcon extends SubsystemBase {
   public falcon() {
     t.Voltage.PeakForwardVoltage = 12;
     t.Voltage.PeakForwardVoltage = 12;
-    var slot0Configs = new Slot0Configs();
+    motor.setNeutralMode(NeutralModeValue.Coast);
     motor.getConfigurator().apply(t);
     updatePID();
   }
@@ -58,23 +59,39 @@ public class falcon extends SubsystemBase {
     SmartDashboard.putNumber("D", Constants.kD);
     SmartDashboard.putNumber("V", Constants.kV);
     SmartDashboard.putNumber("Motor Voltage", volts);
+    SmartDashboard.putNumber("Motor Position", getPosition());
 
-    Constants.kP = SmartDashboard.getNumber("get new P", Constants.kP);
-    Constants.kI = SmartDashboard.getNumber("get new I", Constants.kI);
-    Constants.kD = SmartDashboard.getNumber("get new D", Constants.kD);
-    Constants.kV = SmartDashboard.getNumber("get new V", Constants.kV);
+    SmartDashboard.getNumber("get new P", Constants.kP);
+    SmartDashboard.getNumber("get new I", Constants.kI);
+    SmartDashboard.getNumber("get new D", Constants.kD);
+    SmartDashboard.getNumber("get new V", Constants.kV);
+    updatePID();
   }
 
   public void runMotor(double speedt){
     volts = controller.calculate(vel, speedt);
     motor.setVoltage(volts);
+    SmartDashboard.putNumber("target speed", speedt/2);
   }
   public void runMotorPose(double p){
     motor.setVoltage(controller.calculate(pose, p));
+  }
+
+  public void setVoltage(double v){
+    motor.setVoltage(v);
   }
 
   public void zeroMotor(){
     motor.setVoltage(0);
     motor.set(0);
   }
+  public double getPosition(){
+    return motor.getPosition().getValueAsDouble();
+  }
+
+  public void reset_pose(){
+    motor.setPosition(0);
+  }
 }
+// 4.9 m/s, 1.1 rad
+// better 1.3 rad with 4-5 m/s

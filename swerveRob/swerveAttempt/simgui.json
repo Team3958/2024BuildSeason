@@ -1,0 +1,50 @@
+{
+  "HALProvider": {
+    "Analog Inputs": {
+      "window": {
+        "visible": true
+      }
+    },
+    "Other Devices": {
+      "Talon FX (v6)[0]": {
+        "header": {
+          "open": true
+        }
+      },
+      "Talon FX (v6)[0]/Fwd Limit": {
+        "header": {
+          "open": true
+        }
+      },
+      "Talon FX (v6)[0]/Rotor Sensor": {
+        "header": {
+          "open": true
+        }
+      },
+      "Talon FX (v6)[1]": {
+        "header": {
+          "open": true
+        }
+      }
+    }
+  },
+  "NTProvider": {
+    "types": {
+      "/FMSInfo": "FMSInfo"
+    }
+  },
+  "NetworkTables": {
+    "Retained Values": {
+      "open": false
+    }
+  },
+  "NetworkTables Info": {
+    "Clients": {
+      "open": true
+    },
+    "shuffleboard@1": {
+      "open": true
+    },
+    "visible": true
+  }
+}

@@ -2,23 +2,19 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands;
+package frc.robot.commands.driveCommands;
 
-import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Subsystem;
-import frc.robot.subsystems.pneumatics;
+import frc.robot.subsystems.falcon;
 
-public class movePiston extends Command {
-  /** Creates a new movePiston. */
-  private pneumatics piston;
-  public movePiston(pneumatics p) {
+public class driveMotor extends Command {
+  /** Creates a new driveMotor. */
+  private falcon motor;
+  public driveMotor(falcon m) {
     // Use addRequirements() here to declare subsystem dependencies.
-    piston = p;
-    addRequirements(piston);
+    motor = m;
+    addRequirements(motor);
   }
-
- 
 
   // Called when the command is initially scheduled.
   @Override
@@ -27,13 +23,13 @@ public class movePiston extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    piston.setForword();
+    motor.runMotor(40);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    piston.setReverse();
+    motor.zeroMotor();
   }
 
   // Returns true when the command should end.

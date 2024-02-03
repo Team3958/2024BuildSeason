@@ -2,7 +2,9 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands;
+package frc.robot.commands.driveCommands;
+
+import java.util.function.Supplier;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
@@ -11,12 +13,11 @@ import frc.robot.subsystems.falcon;
 
 public class driveByController extends Command {
   /** Creates a new driveByController. */
-  private XboxController xc;
+  private Supplier<Double> speed;
   private falcon falcon;
 
-  public driveByController(XboxController xboxdisard, falcon falcondiscard) {
-
-    xc = xboxdisard;
+  public driveByController(Supplier<Double> speed, falcon falcondiscard) {
+    this.speed = speed;
     falcon = falcondiscard;
     addRequirements(falcon);
     // Use addRequirements() here to declare subsystem dependencies.
@@ -29,8 +30,8 @@ public class driveByController extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-
-    falcon.runMotor(StickDriftOffset(xc.getLeftY(),0.08 )*200);
+    double sped = (0.07 > Math.abs(speed.get())) ? 0:speed.get();
+    falcon.runMotor(sped*200);
     
   }
 

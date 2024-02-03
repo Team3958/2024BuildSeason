@@ -4,21 +4,15 @@
 
 package frc.robot;
 
-import frc.robot.Constants.OperatorConstants;
-import frc.robot.commands.Autos;
-import frc.robot.commands.ExampleCommand;
-import frc.robot.commands.driveByController;
-import frc.robot.commands.driveMotor;
-import frc.robot.commands.movePiston;
-import frc.robot.commands.stopPiston;
-import frc.robot.subsystems.ExampleSubsystem;
+import frc.robot.commands.driveCommands.driveByController;
+import frc.robot.commands.driveCommands.positionCommand;
+import frc.robot.commands.pneumatics.movePiston;
+import frc.robot.commands.pneumatics.stopPiston;
 import frc.robot.subsystems.falcon;
 import frc.robot.subsystems.pneumatics;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -28,27 +22,26 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
-  private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
+  
   private final XboxController xc = new XboxController(Constants.XC1);
 
-  private final pneumatics piston = new pneumatics();
-  //private final falcon m_motor = new falcon();
+  //private final pneumatics piston = new pneumatics();
+  private final falcon m_motor = new falcon();
 
-  private final movePiston m_actuate = new movePiston(piston);
+  /*private final movePiston m_actuate = new movePiston(piston);
   private final stopPiston m_StopPiston = new stopPiston(piston);
-  //private final driveMotor m_DriveMotor = new driveMotor(m_motor);
-  //private final driveByController m_drive = new driveByController(xc, m_motor);
-
-  // Replace with CommandPS4Controller or CommandJoystick if needed
+  private final positionCommand m_pose = new positionCommand(m_motor, 1000);*/
   
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     // Configure the trigger bindings
-    //m_motor.setDefaultCommand(m_drive);
-    new JoystickButton(xc, Constants.xcA).whileTrue(m_actuate);
+    m_motor.setDefaultCommand(new driveByController(() -> xc.getLeftY(), m_motor));
+  // new JoystickButton(xc, Constants.xcA).toggleOnTrue(m_actuate);
 
-    new JoystickButton(xc, Constants.xcB).whileTrue(m_StopPiston);
+   // new JoystickButton(xc, Constants.xcB).onTrue(m_StopPiston);
+    
+    //new JoystickButton(xc, Constants.xcY).toggleOnTrue(m_pose);
   }
 
 
