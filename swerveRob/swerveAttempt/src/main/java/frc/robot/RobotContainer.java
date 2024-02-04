@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.opencv.core.Mat;
 
+import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.path.PathPlannerTrajectory;
 
 import edu.wpi.first.math.controller.HolonomicDriveController;
@@ -35,7 +36,7 @@ public class RobotContainer {
     private final XboxController xc = new XboxController(0);
     private SwerveControllerCommand controllerCommand;
     
-    
+    PathPlannerAuto N = new PathPlannerAuto("New Auto");
   // Trajectory chosenTrajectory;
 
   
@@ -65,8 +66,7 @@ public class RobotContainer {
                 
 
         configureButtonBindings();
-        //autoChooser = AutoBuilder.buildAutoChooser();
-        //AutoBuilder.followPath(PathPlannerPath.fromPathFile("New Path")).schedule();
+    
         
     }
     
@@ -77,6 +77,6 @@ public class RobotContainer {
 
     public Command getAutonomousCommand() {
         // 1. Create trajectory settings
-        return controllerCommand;
+        return N;
     }
 }
