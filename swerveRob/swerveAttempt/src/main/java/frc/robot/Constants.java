@@ -96,6 +96,12 @@ public static final Matrix<N3, N1> StandardDev = null;
 public static final Matrix<N3, N1> visionStandardDev = null;
 
 
+//holonomic controllor pid constants.
+public static final double xP = 0;
+public static final double yP = 0;
+public static final double thetaP = 0;
+
+
 
 
 }
