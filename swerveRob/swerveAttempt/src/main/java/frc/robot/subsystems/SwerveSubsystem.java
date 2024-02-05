@@ -3,6 +3,7 @@ package frc.robot.subsystems;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.littletonrobotics.junction.Logger;
 import org.photonvision.PhotonCamera;
 
 import com.kauailabs.navx.frc.AHRS;
@@ -118,6 +119,7 @@ public class SwerveSubsystem extends SubsystemBase {
         updateSwerveModPose();
         odometer.update(getRotation2d(), swerveModPose);
         poseEstimator.update(getRotation2d(), swerveModPose);
+        Logger.recordOutput("MyPose", getPose());
         var res = cam.getLatestResult();
         if (res.hasTargets()) {
             var imageCaptureTime = res.getTimestampSeconds();
@@ -162,6 +164,7 @@ public class SwerveSubsystem extends SubsystemBase {
             newStates.toArray(desiredStates);    
         }
         SmartDashboard.putNumber("states", desiredStates[0].speedMetersPerSecond);
+        Logger.recordOutput("MyStates", desiredStates);
         frontLeft.setDesiredState(desiredStates[0]);
         frontRight.setDesiredState(desiredStates[1]);
         backLeft.setDesiredState(desiredStates[2]);

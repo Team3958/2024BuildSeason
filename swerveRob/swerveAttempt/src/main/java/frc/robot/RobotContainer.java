@@ -7,7 +7,9 @@ import java.util.List;
 
 import org.opencv.core.Mat;
 
+import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
+import com.pathplanner.lib.commands.PathfindThenFollowPathHolonomic;
 import com.pathplanner.lib.path.PathPlannerTrajectory;
 
 import edu.wpi.first.math.controller.HolonomicDriveController;
@@ -26,7 +28,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.drivingCommand;
-import frc.robot.commands.pathPlanner;
 import frc.robot.commands.zeroHeading;
 import frc.robot.subsystems.SwerveSubsystem;
 
@@ -37,6 +38,9 @@ public class RobotContainer {
     private SwerveControllerCommand controllerCommand;
     
     PathPlannerAuto N = new PathPlannerAuto("New Auto");
+    PathfindThenFollowPathHolonomic findPath;
+
+    
   // Trajectory chosenTrajectory;
 
   
@@ -63,10 +67,11 @@ public class RobotContainer {
         () -> xc.getLeftY(),
         () -> xc.getRightX(),
         () -> !xc.getYButton()));
-                
+        
 
         configureButtonBindings();
-    
+    NamedCommands.registerCommand("zero", new zeroHeading(swerveSubsystem));
+    //findPath = new PathfindThenFollowPathHolonomic(null, null, null, null, null, null, null, null);
         
     }
     
