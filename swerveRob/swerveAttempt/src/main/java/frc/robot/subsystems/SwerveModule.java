@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.sim.TalonFXSimState;
 
@@ -25,6 +26,8 @@ public class SwerveModule {
      private final AnalogInput absoluteEncoder;
      private final boolean absoluteEncoderReversed;
     private final double absoluteEncoderOffsetRad;
+    TalonFXSimState dtSim;
+    TalonFXSimState ttSim;
     double driveVolts;
     double turnVolts;
     
@@ -36,10 +39,19 @@ public class SwerveModule {
         this.absoluteEncoderOffsetRad = absoluteEncoderOffset;
         this.absoluteEncoderReversed = absoluteEncoderReversed;
         absoluteEncoder = new AnalogInput(absoluteEncoderId);
+        TalonFXConfiguration driveConfiguration = new TalonFXConfiguration();
+        TalonFXConfiguration turninConfiguration = new TalonFXConfiguration();
+        driveConfiguration.Voltage.PeakForwardVoltage = 12;
+        driveConfiguration.Voltage.PeakReverseVoltage = 12;
+        driveConfiguration.CurrentLimits.StatorCurrentLimit = 40;
 
+        turninConfiguration.Voltage.PeakForwardVoltage = 8;
+        turninConfiguration.Voltage.PeakReverseVoltage = 8;
+        turninConfiguration.CurrentLimits.StatorCurrentLimit = 20;
         driveMotor = new TalonFX(driveMotorId);
         turningMotor = new TalonFX(turningMotorId);
-
+        driveMotor.getConfigurator().apply(driveConfiguration);
+        turningMotor.getConfigurator().apply(turninConfiguration);
 
         driveMotor.setInverted(driveMotorReversed);
         turningMotor.setInverted(turningMotorReversed);
@@ -51,7 +63,8 @@ public class SwerveModule {
         turningPidController = new PIDController(Constants.kPTurning, 0, 0);
         //velocityPidController = new PIDController(Constants.kPDriving, 0, 0);
         turningPidController.enableContinuousInput(-Math.PI, Math.PI);
-            
+        dtSim = new TalonFXSimState(driveMotor);
+        ttSim = new TalonFXSimState(turningMotor);
         reset_encoders();
     }
 
@@ -76,7 +89,8 @@ public class SwerveModule {
         double angle = absoluteEncoder.getVoltage() / RobotController.getVoltage5V();
         angle *= 2.0 * Math.PI;
         angle -= absoluteEncoderOffsetRad;
-        return angle * (absoluteEncoderReversed ? -1.0 : 1.0);
+        //return angle * (absoluteEncoderReversed ? -1.0 : 1.0);
+        return 0.3;
     }
 
     
@@ -96,12 +110,14 @@ public class SwerveModule {
             stop();
             return;
         }
+        
         state = SwerveModuleState.optimize(state, getState().angle);
         driveVolts = con.calculate(getDriveVelocity()*2, state.speedMetersPerSecond );
         turnVolts = turningPidController.calculate(getTurningPosition(), state.angle.getRadians());
         driveMotor.setVoltage(driveVolts); // double check rotor ratio
         turningMotor.setVoltage(turnVolts);
         SmartDashboard.putString("Swerve[" + absoluteEncoder.getChannel() + "] state", state.toString());
+        SmartDashboard.putNumber("fl motro speed", state.speedMetersPerSecond);
         
     }
 

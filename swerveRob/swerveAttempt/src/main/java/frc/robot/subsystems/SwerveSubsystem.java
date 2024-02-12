@@ -3,7 +3,7 @@ package frc.robot.subsystems;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.littletonrobotics.junction.Logger;
+//import org.littletonrobotics.junction.Logger;
 import org.photonvision.PhotonCamera;
 
 import com.kauailabs.navx.frc.AHRS;
@@ -24,7 +24,7 @@ import frc.robot.Constants;
 
 
 public class SwerveSubsystem extends SubsystemBase {
-    private PhotonCamera cam = new PhotonCamera(Constants.kCamName);
+    //private PhotonCamera cam = new PhotonCamera(Constants.kCamName);
     private final SwerveModule frontLeft = new SwerveModule(
             Constants.kFrontLeftDriveMotorPort,
             Constants.kFrontLeftTurningMotorPort,
@@ -61,7 +61,7 @@ public class SwerveSubsystem extends SubsystemBase {
             Constants.kBackRightDriveAbsoluteEncoderOffsetRad,
             Constants.kBackRightDriveAbsoluteEncoderReversed);
 
-     private final AHRS gyro = new AHRS(SPI.Port.kMXP);
+     //private final AHRS gyro = new AHRS(SPI.Port.kMXP);
      private SwerveModulePosition[] swerveModPose= new SwerveModulePosition[]{
         frontLeft.getSwerveModulePosition(),
         backLeft.getSwerveModulePosition(),
@@ -75,7 +75,7 @@ public class SwerveSubsystem extends SubsystemBase {
     double xinput;
     
     public SwerveSubsystem() {
-        poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(0.5,0.5,20));
+        //poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(0.5,0.5,20));
         new Thread(() -> {
             try {
                 Thread.sleep(1000);
@@ -95,11 +95,12 @@ public class SwerveSubsystem extends SubsystemBase {
     }
 
     public void zeroHeading() {
-        gyro.reset();
+        //gyro.reset();
     }
 
     public double getHeading() {
-        return Math.IEEEremainder(gyro.getAngle(), 360);
+       // return Math.IEEEremainder(gyro.getAngle(), 360);
+       return 0;
     }
 
     public Rotation2d getRotation2d() {
@@ -119,19 +120,20 @@ public class SwerveSubsystem extends SubsystemBase {
         updateSwerveModPose();
         odometer.update(getRotation2d(), swerveModPose);
         poseEstimator.update(getRotation2d(), swerveModPose);
-        Logger.recordOutput("MyPose", getPose());
-        var res = cam.getLatestResult();
+        //Logger.recordOutput("MyPose", getPose());
+        /*var res = cam.getLatestResult();
         if (res.hasTargets()) {
             var imageCaptureTime = res.getTimestampSeconds();
             var camToTargetTrans = res.getBestTarget().getBestCameraToTarget();
             var camPose = Constants.kFarTargetPose.transformBy(camToTargetTrans.inverse());
             poseEstimator.addVisionMeasurement(
                     camPose.transformBy(Constants.kCameraToRobot).toPose2d(), imageCaptureTime);
-        }
+        }*/
         SmartDashboard.putNumber("Robot Heading", getHeading());
         SmartDashboard.putString("Robot Location", getPose().getTranslation().toString());
         SmartDashboard.putString("estimated pose", poseEstimator.getEstimatedPosition().getTranslation().toString());
         SmartDashboard.putNumber("angle", poseEstimator.getEstimatedPosition().getRotation().getDegrees());
+        SmartDashboard.putNumber("fl encoder angle", frontLeft.getAbsoluteEncoderRad());
 
     }
 
@@ -149,6 +151,13 @@ public class SwerveSubsystem extends SubsystemBase {
         //Constants.kDriveKinematics.normalizeWheelSpeeds(desiredStates, Constants.kPhysicalMaxSpeedMetersPerSecond);
         boolean flagOverDrive = false;
         double sum = 0;
+        double o;
+        try{
+            o = desiredStates[0].speedMetersPerSecond;
+        }
+        catch(Exception e){
+            System.out.println("null state");
+        }
         for(int i = 0; i<3; i++){
             if(desiredStates[i].speedMetersPerSecond > Constants.kPhysicalMaxSpeedMetersPerSecond){
                 flagOverDrive = true;
@@ -164,7 +173,7 @@ public class SwerveSubsystem extends SubsystemBase {
             newStates.toArray(desiredStates);    
         }
         SmartDashboard.putNumber("states", desiredStates[0].speedMetersPerSecond);
-        Logger.recordOutput("MyStates", desiredStates);
+        //Logger.recordOutput("MyStates", desiredStates);
         frontLeft.setDesiredState(desiredStates[0]);
         frontRight.setDesiredState(desiredStates[1]);
         backLeft.setDesiredState(desiredStates[2]);

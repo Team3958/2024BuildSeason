@@ -37,7 +37,7 @@ public class RobotContainer {
     private final XboxController xc = new XboxController(0);
     private SwerveControllerCommand controllerCommand;
     
-    PathPlannerAuto N = new PathPlannerAuto("New Auto");
+    //PathPlannerAuto N = new PathPlannerAuto("New Auto");
     PathfindThenFollowPathHolonomic findPath;
 
     
@@ -82,6 +82,6 @@ public class RobotContainer {
 
     public Command getAutonomousCommand() {
         // 1. Create trajectory settings
-        return N;
+        return controllerCommand;
     }
 }

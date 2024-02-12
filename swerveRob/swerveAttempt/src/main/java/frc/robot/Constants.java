@@ -5,7 +5,6 @@
 package frc.robot;
 
 import edu.wpi.first.math.Matrix;
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -28,7 +27,7 @@ public final class Constants {
 
 public static final double kPTurning = 0.05;
 public static final double kPDriving = 0.05;
-public static final double WHEELRADIUS = 0;
+public static final double WHEELRADIUS = 0.21;
 
 
 // define swerve
