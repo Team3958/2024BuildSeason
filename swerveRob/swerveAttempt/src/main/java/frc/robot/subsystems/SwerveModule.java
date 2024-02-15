@@ -6,6 +6,7 @@ import com.ctre.phoenix6.sim.TalonFXSimState;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
@@ -19,9 +20,9 @@ public class SwerveModule {
      private final TalonFX driveMotor;
      private final TalonFX turningMotor;
 
-
-     private final ProfiledPIDController con = new ProfiledPIDController(Constants.kPDriving, 0,0, new TrapezoidProfile.Constraints(10, 3));
-     private final PIDController turningPidController;
+     private final SimpleMotorFeedforward driveMotFF = new SimpleMotorFeedforward(Constants.ks, Constants.kv);
+     private final ProfiledPIDController turningPidController = new ProfiledPIDController(Constants.kPTurning,0,0, new TrapezoidProfile.Constraints(10, 5));
+     
      
      private final AnalogInput absoluteEncoder;
      private final boolean absoluteEncoderReversed;
@@ -60,11 +61,11 @@ public class SwerveModule {
 
       
 
-        turningPidController = new PIDController(Constants.kPTurning, 0, 0);
+        
         //velocityPidController = new PIDController(Constants.kPDriving, 0, 0);
         turningPidController.enableContinuousInput(-Math.PI, Math.PI);
-        dtSim = new TalonFXSimState(driveMotor);
-        ttSim = new TalonFXSimState(turningMotor);
+       // dtSim = new TalonFXSimState(driveMotor);
+        //ttSim = new TalonFXSimState(turningMotor);
         reset_encoders();
     }
 
@@ -89,8 +90,8 @@ public class SwerveModule {
         double angle = absoluteEncoder.getVoltage() / RobotController.getVoltage5V();
         angle *= 2.0 * Math.PI;
         angle -= absoluteEncoderOffsetRad;
-        //return angle * (absoluteEncoderReversed ? -1.0 : 1.0);
-        return 0.3;
+        return angle * (absoluteEncoderReversed ? -1.0 : 1.0);
+
     }
 
     
@@ -112,8 +113,10 @@ public class SwerveModule {
         }
         
         state = SwerveModuleState.optimize(state, getState().angle);
-        driveVolts = con.calculate(getDriveVelocity()*2, state.speedMetersPerSecond );
-        turnVolts = turningPidController.calculate(getTurningPosition(), state.angle.getRadians());
+        
+        driveVolts = driveMotFF.calculate(state.speedMetersPerSecond);
+        driveMotFF.calculate(turnVolts, driveVolts, absoluteEncoderOffsetRad);
+        turnVolts = turningPidController.calculate(getAbsoluteEncoderRad(), state.angle.getRadians());
         driveMotor.setVoltage(driveVolts); // double check rotor ratio
         turningMotor.setVoltage(turnVolts);
         SmartDashboard.putString("Swerve[" + absoluteEncoder.getChannel() + "] state", state.toString());

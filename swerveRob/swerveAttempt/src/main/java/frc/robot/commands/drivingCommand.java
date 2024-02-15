@@ -37,8 +37,7 @@ public class drivingCommand extends Command {
     @Override
     public void execute() {
         // 1. Get real-time joystick inputs
-        double xSpeed = 0.5;
-        //xSpdFunction.get();
+        double xSpeed = xSpdFunction.get();
         //double xSpeed = swerveSubsystem.getX();
         double ySpeed = ySpdFunction.get();
         double turningSpeed = turningSpdFunction.get();

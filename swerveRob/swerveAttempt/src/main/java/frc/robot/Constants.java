@@ -76,16 +76,16 @@ public static final SwerveDriveKinematics kDriveKinematics = new SwerveDriveKine
   leftBackModule,
   rightFrontModule,
   rightBackModule);
-public static final double kPhysicalMaxSpeedMetersPerSecond = 0;
-public static final double kPThetaController = 0;
+public static final double kPhysicalMaxSpeedMetersPerSecond = 10;
+public static final double kPThetaController = 0.05;
 public static final double kThetaControllerConstraints = 0;
-public static final double kPXController = 0;
-public static final double kPYController = 0;
-public static final double kTeleDriveMaxAccelerationUnitsPerSecond = 0;
-public static final double kTeleDriveMaxAngularAccelerationUnitsPerSecond = 0;
+public static final double kPXController = 0.05;
+public static final double kPYController = 0.05;
+public static final double kTeleDriveMaxAccelerationUnitsPerSecond = 4;
+public static final double kTeleDriveMaxAngularAccelerationUnitsPerSecond = 10;
 public static final double kDeadband = 0.1;
-public static final double kTeleDriveMaxSpeedMetersPerSecond = 0;
-public static final double kTeleDriveMaxAngularSpeedRadiansPerSecond = 0;
+public static final double kTeleDriveMaxSpeedMetersPerSecond = 4;
+public static final double kTeleDriveMaxAngularSpeedRadiansPerSecond = 20;
 public static final double kdriveGearRation = 1/12;
 public static final String kCamName = null;
 
@@ -99,6 +99,10 @@ public static final Matrix<N3, N1> visionStandardDev = null;
 public static final double xP = 0;
 public static final double yP = 0;
 public static final double thetaP = 0;
+
+// driving feed forward
+public static final double ks = 0.01;
+public static final double kv = 0.00;
 
 
 

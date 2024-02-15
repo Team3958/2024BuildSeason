@@ -1,10 +1,5 @@
 {
   "HALProvider": {
-    "Analog Inputs": {
-      "window": {
-        "visible": true
-      }
-    },
     "Other Devices": {
       "Talon FX (v6)[0]": {
         "header": {

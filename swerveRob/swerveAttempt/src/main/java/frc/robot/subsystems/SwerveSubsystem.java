@@ -129,12 +129,15 @@ public class SwerveSubsystem extends SubsystemBase {
             poseEstimator.addVisionMeasurement(
                     camPose.transformBy(Constants.kCameraToRobot).toPose2d(), imageCaptureTime);
         }*/
+        
+        updateShuffleBoard();
+    }
+    private void updateShuffleBoard(){
         SmartDashboard.putNumber("Robot Heading", getHeading());
         SmartDashboard.putString("Robot Location", getPose().getTranslation().toString());
         SmartDashboard.putString("estimated pose", poseEstimator.getEstimatedPosition().getTranslation().toString());
         SmartDashboard.putNumber("angle", poseEstimator.getEstimatedPosition().getRotation().getDegrees());
         SmartDashboard.putNumber("fl encoder angle", frontLeft.getAbsoluteEncoderRad());
-
     }
 
     public void stopModules() {
