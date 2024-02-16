@@ -72,7 +72,7 @@ public class RobotContainer {
         
 
         configureButtonBindings();
-    NamedCommands.registerCommand("zero", new zeroHeading(swerveSubsystem));
+    //NamedCommands.registerCommand("zero", new zeroHeading(swerveSubsystem));
     //findPath = new PathfindThenFollowPathHolonomic(null, null, null, null, null, null, null, null);
         
     }

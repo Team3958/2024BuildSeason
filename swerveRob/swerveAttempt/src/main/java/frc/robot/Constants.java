@@ -63,8 +63,8 @@ public static final int kBackRightDriveAbsoluteEncoderPort = 3;
 public static final double kBackRightDriveAbsoluteEncoderOffsetRad = 0;
 public static final boolean kBackRightDriveAbsoluteEncoderReversed = false;
 
-public static final double kWheelBase = 0;
-public static final double kTrackWidth= 0;
+public static final double kWheelBase = 0.8;
+public static final double kTrackWidth= 0.8;
 
 public static final Translation2d leftFrontModule = new Translation2d(kWheelBase / 2, -kTrackWidth / 2);
 public static final Translation2d leftBackModule = new Translation2d(kWheelBase / 2, kTrackWidth / 2);
@@ -74,8 +74,8 @@ public static final Translation2d rightBackModule = new Translation2d(-kWheelBas
 public static final SwerveDriveKinematics kDriveKinematics = new SwerveDriveKinematics(
   leftFrontModule,
   leftBackModule,
-  rightFrontModule,
-  rightBackModule);
+  rightFrontModule
+  );// rb module
 public static final double kPhysicalMaxSpeedMetersPerSecond = 10;
 public static final double kPThetaController = 0.05;
 public static final double kThetaControllerConstraints = 0;
@@ -102,7 +102,7 @@ public static final double thetaP = 0;
 
 // driving feed forward
 public static final double ks = 0.01;
-public static final double kv = 0.00;
+public static final double kv = 1;
 
 
 

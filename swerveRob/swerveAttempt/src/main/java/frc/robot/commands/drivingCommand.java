@@ -15,6 +15,14 @@ public class drivingCommand extends Command {
     private final Supplier<Double> xSpdFunction, ySpdFunction, turningSpdFunction;
     private final Supplier<Boolean> fieldOrientedFunction;
     private final SlewRateLimiter xLimiter, yLimiter, turningLimiter;
+    
+    double xSpeed;
+    double ySpeed;
+    double turningSpeed;
+
+    ChassisSpeeds chassisSpeeds;
+    SwerveModuleState[] moduleStates;
+
 
     public drivingCommand(SwerveSubsystem swerveSubsystem,
             Supplier<Double> xSpdFunction, Supplier<Double> ySpdFunction, Supplier<Double> turningSpdFunction,
@@ -37,10 +45,10 @@ public class drivingCommand extends Command {
     @Override
     public void execute() {
         // 1. Get real-time joystick inputs
-        double xSpeed = xSpdFunction.get();
+        xSpeed = xSpdFunction.get();
         //double xSpeed = swerveSubsystem.getX();
-        double ySpeed = ySpdFunction.get();
-        double turningSpeed = turningSpdFunction.get();
+        ySpeed = ySpdFunction.get();
+        turningSpeed = turningSpdFunction.get();
 
         // 2. Apply deadband
         xSpeed = Math.abs(xSpeed) > Constants.kDeadband ? xSpeed : 0;
@@ -54,7 +62,7 @@ public class drivingCommand extends Command {
                 * Constants.kTeleDriveMaxAngularSpeedRadiansPerSecond;
 
         // 4. Construct desired chassis speeds
-        ChassisSpeeds chassisSpeeds;
+        
         if (fieldOrientedFunction.get()) {
             // Relative to field
             chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(
@@ -65,7 +73,7 @@ public class drivingCommand extends Command {
         }
         
         // 5. Convert chassis speeds to individual module states
-        SwerveModuleState[] moduleStates = Constants.kDriveKinematics.toSwerveModuleStates(chassisSpeeds);
+        moduleStates = Constants.kDriveKinematics.toSwerveModuleStates(chassisSpeeds);
 
         // 6. Output each module states to wheels
         swerveSubsystem.setModuleStates(moduleStates);
