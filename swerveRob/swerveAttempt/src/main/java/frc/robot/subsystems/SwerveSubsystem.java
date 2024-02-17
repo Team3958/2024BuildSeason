@@ -56,21 +56,21 @@ public class SwerveSubsystem extends SubsystemBase {
             Constants.kBackLeftDriveAbsoluteEncoderOffsetRad,
             Constants.kBackLeftDriveAbsoluteEncoderReversed);
 
-    /*private final SwerveModule backRight = new SwerveModule(
+    private final SwerveModule backRight = new SwerveModule(
             Constants.kBackRightDriveMotorPort,
             Constants.kBackRightTurningMotorPort,
             Constants.kBackRightDriveEncoderReversed,
             Constants.kBackRightTurningEncoderReversed,
             Constants.kBackRightDriveAbsoluteEncoderPort,
             Constants.kBackRightDriveAbsoluteEncoderOffsetRad,
-            Constants.kBackRightDriveAbsoluteEncoderReversed);*/
+            Constants.kBackRightDriveAbsoluteEncoderReversed);
 
      //private final AHRS gyro = new AHRS(SPI.Port.kMXP);
      private SwerveModulePosition[] swerveModPose= new SwerveModulePosition[]{
         frontLeft.getSwerveModulePosition(),
         backLeft.getSwerveModulePosition(),
         frontRight.getSwerveModulePosition(),
-        //backRight.getSwerveModulePosition()
+        backRight.getSwerveModulePosition()
      };
 
     private final SwerveDriveOdometry odometer = new SwerveDriveOdometry(Constants.kDriveKinematics, new Rotation2d(0), swerveModPose);
@@ -94,7 +94,7 @@ public class SwerveSubsystem extends SubsystemBase {
             frontLeft.getSwerveModulePosition(),
             backLeft.getSwerveModulePosition(),
             frontRight.getSwerveModulePosition(),
-            //backRight.getSwerveModulePosition()
+            backRight.getSwerveModulePosition()
      };
     }
 
@@ -122,8 +122,8 @@ public class SwerveSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
         updateSwerveModPose();
-        odometer.update(getRotation2d(), swerveModPose);
-        poseEstimator.update(getRotation2d(), swerveModPose);
+        //odometer.update(getRotation2d(), swerveModPose);
+       // poseEstimator.update(getRotation2d(), swerveModPose);
         //Logger.recordOutput("MyPose", getPose());
         /*var res = cam.getLatestResult();
         if (res.hasTargets()) {
@@ -148,7 +148,7 @@ public class SwerveSubsystem extends SubsystemBase {
         frontLeft.stop();
         frontRight.stop();
         backLeft.stop();
-        //backRight.stop();
+        backRight.stop();
     }
     public double getX(){
         return xinput;
@@ -188,6 +188,6 @@ public class SwerveSubsystem extends SubsystemBase {
         frontLeft.setDesiredState(desiredStates[0]);
         frontRight.setDesiredState(desiredStates[1]);
         backLeft.setDesiredState(desiredStates[2]);
-        //backRight.setDesiredState(desiredStates[3]);
+        backRight.setDesiredState(desiredStates[3]);
     }
 }

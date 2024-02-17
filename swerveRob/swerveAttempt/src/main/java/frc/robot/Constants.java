@@ -31,32 +31,32 @@ public static final double WHEELRADIUS = 0.21;
 
 
 // define swerve
-public static final int kFrontLeftDriveMotorPort = 0;
-public static final int kFrontLeftTurningMotorPort = 1;
+public static final int kFrontLeftDriveMotorPort = 22;
+public static final int kFrontLeftTurningMotorPort = 21;
 public static final boolean kFrontLeftDriveEncoderReversed = false;
 public static final boolean kFrontLeftTurningEncoderReversed = false;
 public static final int kFrontLeftDriveAbsoluteEncoderPort = 0;
 public static final double kFrontLeftDriveAbsoluteEncoderOffsetRad = 0;
 public static final boolean kFrontLeftDriveAbsoluteEncoderReversed = false;
 
-public static final int kFrontRightDriveMotorPort = 2;
-public static final int kFrontRightTurningMotorPort = 3;
+public static final int kFrontRightDriveMotorPort = 25;
+public static final int kFrontRightTurningMotorPort = 27;
 public static final boolean kFrontRightDriveEncoderReversed = false;
 public static final boolean kFrontRightTurningEncoderReversed = false;
 public static final int kFrontRightDriveAbsoluteEncoderPort = 1;
 public static final double kFrontRightDriveAbsoluteEncoderOffsetRad = 0;
 public static final boolean kFrontRightDriveAbsoluteEncoderReversed = false;
 
-public static final int kBackLeftDriveMotorPort = 04;
-public static final int kBackLeftTurningMotorPort = 05;
+public static final int kBackLeftDriveMotorPort = 20;
+public static final int kBackLeftTurningMotorPort = 23;
 public static final boolean kBackLeftDriveEncoderReversed = false;
 public static final boolean kBackLeftTurningEncoderReversed = false;
 public static final int kBackLeftDriveAbsoluteEncoderPort = 2;
 public static final double kBackLeftDriveAbsoluteEncoderOffsetRad = 0;
 public static final boolean kBackLeftDriveAbsoluteEncoderReversed = false;
 
-public static final int kBackRightDriveMotorPort = 06;
-public static final int kBackRightTurningMotorPort = 07;
+public static final int kBackRightDriveMotorPort = 24;
+public static final int kBackRightTurningMotorPort = 26;
 public static final boolean kBackRightDriveEncoderReversed = false;
 public static final boolean kBackRightTurningEncoderReversed = false;
 public static final int kBackRightDriveAbsoluteEncoderPort = 3;
@@ -74,8 +74,8 @@ public static final Translation2d rightBackModule = new Translation2d(-kWheelBas
 public static final SwerveDriveKinematics kDriveKinematics = new SwerveDriveKinematics(
   leftFrontModule,
   leftBackModule,
-  rightFrontModule
-  );// rb module
+  rightFrontModule,
+  rightBackModule);// rb module
 public static final double kPhysicalMaxSpeedMetersPerSecond = 10;
 public static final double kPThetaController = 0.05;
 public static final double kThetaControllerConstraints = 0;

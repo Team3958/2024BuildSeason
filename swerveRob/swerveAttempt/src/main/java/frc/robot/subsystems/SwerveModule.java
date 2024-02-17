@@ -2,6 +2,7 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.sim.TalonFXSimState;
 
 import edu.wpi.first.math.controller.PIDController;
@@ -20,7 +21,7 @@ public class SwerveModule {
      private final TalonFX driveMotor;
      private final TalonFX turningMotor;
 
-     private final SimpleMotorFeedforward driveMotFF = new SimpleMotorFeedforward(Constants.ks, Constants.kv);
+     //private final SimpleMotorFeedforward driveMotFF = new SimpleMotorFeedforward(Constants.ks, Constants.kv);
      private final ProfiledPIDController turningPidController = new ProfiledPIDController(Constants.kPTurning,0,0, new TrapezoidProfile.Constraints(10, 5));
      
      
@@ -56,6 +57,8 @@ public class SwerveModule {
 
         driveMotor.setInverted(driveMotorReversed);
         turningMotor.setInverted(turningMotorReversed);
+        turningMotor.setNeutralMode(NeutralModeValue.Coast);
+        driveMotor.setNeutralMode(NeutralModeValue.Coast);
         
         
 
@@ -114,13 +117,12 @@ public class SwerveModule {
         
         state = SwerveModuleState.optimize(state, getState().angle);
         
-        driveVolts = driveMotFF.calculate(state.speedMetersPerSecond);
-        driveMotFF.calculate(turnVolts, driveVolts, absoluteEncoderOffsetRad);
+       driveVolts = 3;
         turnVolts = turningPidController.calculate(getAbsoluteEncoderRad(), state.angle.getRadians());
         driveMotor.setVoltage(driveVolts); // double check rotor ratio
         turningMotor.setVoltage(turnVolts);
-        SmartDashboard.putString("Swerve[" + absoluteEncoder.getChannel() + "] state", state.toString());
-        SmartDashboard.putNumber("fl motro speed", state.speedMetersPerSecond);
+        //SmartDashboard.putString("Swerve[" + absoluteEncoder.getChannel() + "] state", state.toString());
+        //SmartDashboard.putNumber("fl motro speed", state.speedMetersPerSecond);
         
     }
 
