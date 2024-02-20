@@ -22,8 +22,8 @@ public class SwerveModule {
      private final TalonFX turningMotor;
 
      //private final SimpleMotorFeedforward driveMotFF = new SimpleMotorFeedforward(Constants.ks, Constants.kv);
-     private final ProfiledPIDController turningPidController = new ProfiledPIDController(Constants.kPTurning,0,0, new TrapezoidProfile.Constraints(10, 5));
-     
+     private final PIDController turningPidController = new PIDController(Constants.kPTurning,0,0);
+     private final ProfiledPIDController proTurn = new ProfiledPIDController(Constants.kPTurning, 0,0, new TrapezoidProfile.Constraints(Math.PI*2,Math.PI/2));
      
      private final AnalogInput absoluteEncoder;
      private final boolean absoluteEncoderReversed;
@@ -49,7 +49,7 @@ public class SwerveModule {
 
         turninConfiguration.Voltage.PeakForwardVoltage = 8;
         turninConfiguration.Voltage.PeakReverseVoltage = 8;
-        turninConfiguration.CurrentLimits.StatorCurrentLimit = 20;
+        turninConfiguration.CurrentLimits.StatorCurrentLimit = 10;
         driveMotor = new TalonFX(driveMotorId);
         turningMotor = new TalonFX(turningMotorId);
         driveMotor.getConfigurator().apply(driveConfiguration);
@@ -110,16 +110,22 @@ public class SwerveModule {
     }
 
     public void setDesiredState(SwerveModuleState state) {
-        if (Math.abs(state.speedMetersPerSecond) < 0.001) {
+        try{if (Math.abs(state.speedMetersPerSecond) < 0.1) {
             stop();
             return;
         }
+    }
+    catch(Exception e){
+        System.err.println("state m/s likely null");
+    }
         
         state = SwerveModuleState.optimize(state, getState().angle);
         
        driveVolts = 3;
-        turnVolts = turningPidController.calculate(getAbsoluteEncoderRad(), state.angle.getRadians());
-        driveMotor.setVoltage(driveVolts); // double check rotor ratio
+        turnVolts = proTurn.calculate(Math.abs(getAbsoluteEncoderRad()), state.angle.getRadians());
+        double speed = state.speedMetersPerSecond/Constants.kPhysicalMaxSpeedMetersPerSecond;
+        //driveMotor.setVoltage(driveVolts); // double check rotor ratio
+        driveMotor.set(speed);
         turningMotor.setVoltage(turnVolts);
         //SmartDashboard.putString("Swerve[" + absoluteEncoder.getChannel() + "] state", state.toString());
         //SmartDashboard.putNumber("fl motro speed", state.speedMetersPerSecond);

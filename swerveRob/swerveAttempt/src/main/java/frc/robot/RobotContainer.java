@@ -63,12 +63,14 @@ public class RobotContainer {
         new Pose2d(3, 0, new Rotation2d(0)),
         config);
         controllerCommand = new SwerveControllerCommand(path, () ->swerveSubsystem.getPose(), Constants.kDriveKinematics, hController, swerveSubsystem::setModuleStates, swerveSubsystem);
-
-        swerveSubsystem.setDefaultCommand(new drivingCommand(swerveSubsystem,
-        () -> xc.getLeftX(),
-        () -> xc.getLeftY(),
-        () -> xc.getRightX(),
-        () -> !xc.getYButton()));
+        // set swerve drive
+        swerveSubsystem.setDefaultCommand(
+        new drivingCommand(
+            swerveSubsystem,
+            () -> xc.getLeftY(),
+            () -> xc.getLeftX(),
+            () -> xc.getRightX(),
+            () -> xc.getYButton()));
         
 
         configureButtonBindings();

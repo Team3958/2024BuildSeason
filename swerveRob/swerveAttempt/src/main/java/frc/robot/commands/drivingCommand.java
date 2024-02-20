@@ -5,6 +5,7 @@ import java.util.function.Supplier;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.subsystems.SwerveSubsystem;
@@ -46,14 +47,18 @@ public class drivingCommand extends Command {
     public void execute() {
         // 1. Get real-time joystick inputs
         xSpeed = xSpdFunction.get();
-        //double xSpeed = swerveSubsystem.getX();
+       
         ySpeed = ySpdFunction.get();
         turningSpeed = turningSpdFunction.get();
 
+        SmartDashboard.putNumber("xbox x", xSpeed);
+        SmartDashboard.putNumber("xbox y", ySpeed);
+        SmartDashboard.putNumber("xbox turn", turningSpeed);
+
         // 2. Apply deadband
-        xSpeed = Math.abs(xSpeed) > Constants.kDeadband ? xSpeed : 0;
-        ySpeed = Math.abs(ySpeed) > Constants.kDeadband ? ySpeed : 0;
-        turningSpeed = Math.abs(turningSpeed) > Constants.kDeadband ? turningSpeed : 0;
+        xSpeed = (Math.abs(xSpeed) > Constants.kDeadband) ? xSpeed : 0;
+        ySpeed = (Math.abs(ySpeed) > Constants.kDeadband) ? ySpeed : 0;
+        turningSpeed = (Math.abs(turningSpeed) > Constants.kDeadband) ? turningSpeed : 0;
 
         // 3. Make the driving smoother
         xSpeed = xLimiter.calculate(xSpeed) * Constants.kTeleDriveMaxSpeedMetersPerSecond;
@@ -71,7 +76,9 @@ public class drivingCommand extends Command {
             // Relative to robot
             chassisSpeeds = new ChassisSpeeds(xSpeed, ySpeed, turningSpeed);
         }
-        
+        SmartDashboard.putNumber("chassis speed x", chassisSpeeds.vxMetersPerSecond);
+        SmartDashboard.putNumber("chassis speed y", chassisSpeeds.vyMetersPerSecond);
+        SmartDashboard.putNumber("chassis turn", chassisSpeeds.omegaRadiansPerSecond);
         // 5. Convert chassis speeds to individual module states
         moduleStates = Constants.kDriveKinematics.toSwerveModuleStates(chassisSpeeds);
 

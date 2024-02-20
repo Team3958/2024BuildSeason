@@ -13,6 +13,7 @@ import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
@@ -27,7 +28,7 @@ public class SwerveSubsystem extends SubsystemBase {
     //private PhotonCamera cam = new PhotonCamera(Constants.kCamName);
     double sum;
     boolean flagOverDrive;
-    List<SwerveModuleState> newStates;
+    List<SwerveModuleState> newStates = new ArrayList<>();
     double normalizedSpeed;
     private final SwerveModule frontLeft = new SwerveModule(
             Constants.kFrontLeftDriveMotorPort,
@@ -65,7 +66,7 @@ public class SwerveSubsystem extends SubsystemBase {
             Constants.kBackRightDriveAbsoluteEncoderOffsetRad,
             Constants.kBackRightDriveAbsoluteEncoderReversed);
 
-     //private final AHRS gyro = new AHRS(SPI.Port.kMXP);
+     private final AHRS gyro = new AHRS(SPI.Port.kMXP);
      private SwerveModulePosition[] swerveModPose= new SwerveModulePosition[]{
         frontLeft.getSwerveModulePosition(),
         backLeft.getSwerveModulePosition(),
@@ -91,7 +92,7 @@ public class SwerveSubsystem extends SubsystemBase {
     }
     public void updateSwerveModPose(){
         this.swerveModPose = new SwerveModulePosition[]{
-            frontLeft.getSwerveModulePosition(),
+            //frontLeft.getSwerveModulePosition(),
             backLeft.getSwerveModulePosition(),
             frontRight.getSwerveModulePosition(),
             backRight.getSwerveModulePosition()
@@ -99,7 +100,7 @@ public class SwerveSubsystem extends SubsystemBase {
     }
 
     public void zeroHeading() {
-        //gyro.reset();
+        gyro.reset();
     }
 
     public double getHeading() {
@@ -137,38 +138,35 @@ public class SwerveSubsystem extends SubsystemBase {
         updateShuffleBoard();
     }
     private void updateShuffleBoard(){
-        SmartDashboard.putNumber("Robot Heading", getHeading());
-        SmartDashboard.putString("Robot Location", getPose().getTranslation().toString());
-        SmartDashboard.putString("estimated pose", poseEstimator.getEstimatedPosition().getTranslation().toString());
-        SmartDashboard.putNumber("angle", poseEstimator.getEstimatedPosition().getRotation().getDegrees());
         SmartDashboard.putNumber("fl encoder angle", frontLeft.getAbsoluteEncoderRad());
+        SmartDashboard.putNumber("fr encoder angle", frontRight.getAbsoluteEncoderRad());
+        SmartDashboard.putNumber("bl encoder angle", backLeft.getAbsoluteEncoderRad());
+        SmartDashboard.putNumber("br encoder angle", backRight.getAbsoluteEncoderRad());
     }
 
     public void stopModules() {
-        frontLeft.stop();
+        //frontLeft.stop();
         frontRight.stop();
         backLeft.stop();
         backRight.stop();
     }
-    public double getX(){
-        return xinput;
-    }
+    
     public void setModuleStates(SwerveModuleState[] desiredStates) {
         //what it was supposed to do
         //Constants.kDriveKinematics.normalizeWheelSpeeds(desiredStates, Constants.kPhysicalMaxSpeedMetersPerSecond);
-        
-        new Thread(()->
-        {try{
+        //SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates, Constants.kPhysicalMaxSpeedMetersPerSecond);
+       
+         try{
             sum = 0;
             flagOverDrive = false;
             for(int i = 0; i<3; i++){
             if(desiredStates[i].speedMetersPerSecond > Constants.kPhysicalMaxSpeedMetersPerSecond){
                 flagOverDrive = true;
             }
-            sum += desiredStates[i].speedMetersPerSecond;
+            sum += Math.abs(desiredStates[i].speedMetersPerSecond);
         }
         if(flagOverDrive == true){
-            newStates = new ArrayList<SwerveModuleState>();
+            newStates.clear();
             for(int i = 0; i<3;i++){
                 normalizedSpeed = (desiredStates[i].speedMetersPerSecond/sum)*Constants.kPhysicalMaxSpeedMetersPerSecond;
                 newStates.add(new SwerveModuleState(normalizedSpeed, desiredStates[i].angle));
@@ -176,18 +174,17 @@ public class SwerveSubsystem extends SubsystemBase {
             newStates.toArray(desiredStates);    
         }
         }
-        catch(OutOfMemoryError o){
+        catch(Exception o){
             System.err.println("memory overflow caused by normaliztions");
             stopModules();
         }
-    }
-        ).start();
-        
-        SmartDashboard.putNumber("states", desiredStates[0].speedMetersPerSecond);
+    
         //Logger.recordOutput("MyStates", desiredStates);
         frontLeft.setDesiredState(desiredStates[0]);
         frontRight.setDesiredState(desiredStates[1]);
         backLeft.setDesiredState(desiredStates[2]);
         backRight.setDesiredState(desiredStates[3]);
+
+        SmartDashboard.putNumber("fr turn state", desiredStates[1].angle.getDegrees());
     }
 }
