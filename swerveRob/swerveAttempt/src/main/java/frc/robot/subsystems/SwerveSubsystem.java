@@ -30,6 +30,7 @@ public class SwerveSubsystem extends SubsystemBase {
     boolean flagOverDrive;
     List<SwerveModuleState> newStates = new ArrayList<>();
     double normalizedSpeed;
+    
     private final SwerveModule frontLeft = new SwerveModule(
             Constants.kFrontLeftDriveMotorPort,
             Constants.kFrontLeftTurningMotorPort,
@@ -154,9 +155,9 @@ public class SwerveSubsystem extends SubsystemBase {
     public void setModuleStates(SwerveModuleState[] desiredStates) {
         //what it was supposed to do
         //Constants.kDriveKinematics.normalizeWheelSpeeds(desiredStates, Constants.kPhysicalMaxSpeedMetersPerSecond);
-        //SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates, Constants.kPhysicalMaxSpeedMetersPerSecond);
+        SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates, Constants.kPhysicalMaxSpeedMetersPerSecond);
        
-         try{
+         /*try{
             sum = 0;
             flagOverDrive = false;
             for(int i = 0; i<3; i++){
@@ -177,13 +178,20 @@ public class SwerveSubsystem extends SubsystemBase {
         catch(Exception o){
             System.err.println("memory overflow caused by normaliztions");
             stopModules();
-        }
+        }*/
     
         //Logger.recordOutput("MyStates", desiredStates);
+        new Thread(()->{
+            try{
         frontLeft.setDesiredState(desiredStates[0]);
         frontRight.setDesiredState(desiredStates[1]);
         backLeft.setDesiredState(desiredStates[2]);
-        backRight.setDesiredState(desiredStates[3]);
+        backRight.setDesiredState(desiredStates[3]);}
+        catch(Exception e){
+
+        }
+    }
+        ).start();
 
         SmartDashboard.putNumber("fr turn state", desiredStates[1].angle.getDegrees());
     }
