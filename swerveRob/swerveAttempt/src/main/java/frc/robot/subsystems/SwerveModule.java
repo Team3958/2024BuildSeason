@@ -24,7 +24,7 @@ public class SwerveModule {
      //private final SimpleMotorFeedforward driveMotFF = new SimpleMotorFeedforward(Constants.ks, Constants.kv);
     
      private final ProfiledPIDController proTurn = new ProfiledPIDController(Constants.kPTurning, 0,0, new TrapezoidProfile.Constraints(Constants.kTeleDriveMaxAngularSpeedRadiansPerSecond,Constants.kTeleDriveMaxAngularAccelerationUnitsPerSecond));
-     private final ProfiledPIDController proDrive = new ProfiledPIDController(Constants.kPDriving, 0, 0, new TrapezoidProfile.Constraints(Constants.kPhysicalMaxSpeedMetersPerSecond, 3));
+     private final PIDController proDrive = new PIDController(Constants.kPDriving, 0, 0);
      private final AnalogInput absoluteEncoder;
      private final boolean absoluteEncoderReversed;
     private final double absoluteEncoderOffsetRad;
@@ -59,6 +59,8 @@ public class SwerveModule {
         turningMotor.setInverted(turningMotorReversed);
         turningMotor.setNeutralMode(NeutralModeValue.Coast);
         driveMotor.setNeutralMode(NeutralModeValue.Coast);
+        //proTurn.setTolerance(0.0649);
+        
         
         
 
@@ -120,7 +122,12 @@ public class SwerveModule {
         System.err.println("state m/s likely null");
     }
         
-        state = SwerveModuleState.optimize(state, new Rotation2d(-getState().angle.getRadians()));
+        //state = SwerveModuleState.optimize(state, new Rotation2d(getState().angle.getRadians()));
+        //replacing optimzize
+        //might need to get rid of negative in Math.abs()
+        if(Math.abs(-state.angle.getDegrees()+getState().angle.getDegrees())> 90){
+            state = new SwerveModuleState(-state.speedMetersPerSecond, new Rotation2d((state.angle.getRadians()-Math.PI)%(Math.PI)));
+        }
         
        driveVolts = proDrive.calculate(getDriveVelocity(), state.speedMetersPerSecond);
         turnVolts = proTurn.calculate(getAbsoluteEncoderRad(), -state.angle.getRadians());

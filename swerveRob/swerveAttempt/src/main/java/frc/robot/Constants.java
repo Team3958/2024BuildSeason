@@ -25,7 +25,7 @@ public final class Constants {
     public static final int kDriverControllerPort = 0;
   }
 
-public static final double kPTurning = 8;
+public static final double kPTurning = 10;
 public static final double kPDriving = 2;
 public static final double WHEELRADIUS = 0.21;
 
@@ -41,26 +41,26 @@ public static final boolean kFrontLeftDriveAbsoluteEncoderReversed = false;
 
 public static final int kFrontRightDriveMotorPort = 25;
 public static final int kFrontRightTurningMotorPort = 27;
-public static  boolean kFrontRightDriveEncoderReversed = false;
+public static  boolean kFrontRightDriveEncoderReversed = true;
 public static final boolean kFrontRightTurningEncoderReversed = false;
 public static final int kFrontRightDriveAbsoluteEncoderPort = 1;
-public static final double kFrontRightDriveAbsoluteEncoderOffsetRad = 0.94;
+public static final double kFrontRightDriveAbsoluteEncoderOffsetRad = 4.15;
 public static final boolean kFrontRightDriveAbsoluteEncoderReversed = false;
 
 public static final int kBackLeftDriveMotorPort = 20;
 public static final int kBackLeftTurningMotorPort = 23;
-public static  boolean kBackLeftDriveEncoderReversed = false;
+public static  boolean kBackLeftDriveEncoderReversed = true;
 public static final boolean kBackLeftTurningEncoderReversed = false;
 public static final int kBackLeftDriveAbsoluteEncoderPort = 3;
-public static final double kBackLeftDriveAbsoluteEncoderOffsetRad = 1.99;
+public static final double kBackLeftDriveAbsoluteEncoderOffsetRad = 5.16;
 public static final boolean kBackLeftDriveAbsoluteEncoderReversed = false;
 
 public static final int kBackRightDriveMotorPort = 24;
 public static final int kBackRightTurningMotorPort = 26;
-public static  boolean kBackRightDriveEncoderReversed = true;
+public static  boolean kBackRightDriveEncoderReversed = false ;
 public static final boolean kBackRightTurningEncoderReversed = false;
 public static final int kBackRightDriveAbsoluteEncoderPort = 2;
-public static final double kBackRightDriveAbsoluteEncoderOffsetRad = 0.51+0.57;
+public static final double kBackRightDriveAbsoluteEncoderOffsetRad = 0.71+2.15;
 public static final boolean kBackRightDriveAbsoluteEncoderReversed = false;
 
 public static final double kWheelBase = 0.752475;
@@ -82,10 +82,10 @@ public static final double kThetaControllerConstraints = 0;
 public static final double kPXController = 0.05;
 public static final double kPYController = 0.05;
 public static final double kTeleDriveMaxAccelerationUnitsPerSecond = 3;
-public static final double kTeleDriveMaxAngularAccelerationUnitsPerSecond = 10;
+public static final double kTeleDriveMaxAngularAccelerationUnitsPerSecond = 40;
 public static final double kDeadband = 0.15;
 public static final double kTeleDriveMaxSpeedMetersPerSecond = 4;
-public static final double kTeleDriveMaxAngularSpeedRadiansPerSecond = 20;
+public static final double kTeleDriveMaxAngularSpeedRadiansPerSecond = 40;
 public static final double kdriveGearRation = 1/12;
 public static final String kCamName = null;
 
