@@ -155,9 +155,9 @@ public class SwerveSubsystem extends SubsystemBase {
     public void setModuleStates(SwerveModuleState[] desiredStates) {
         //what it was supposed to do
         //Constants.kDriveKinematics.normalizeWheelSpeeds(desiredStates, Constants.kPhysicalMaxSpeedMetersPerSecond);
-        SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates, Constants.kPhysicalMaxSpeedMetersPerSecond);
+        //SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates, Constants.kPhysicalMaxSpeedMetersPerSecond);
        
-         /*try{
+         try{
             sum = 0;
             flagOverDrive = false;
             for(int i = 0; i<3; i++){
@@ -170,7 +170,8 @@ public class SwerveSubsystem extends SubsystemBase {
             newStates.clear();
             for(int i = 0; i<3;i++){
                 normalizedSpeed = (desiredStates[i].speedMetersPerSecond/sum)*Constants.kPhysicalMaxSpeedMetersPerSecond;
-                newStates.add(new SwerveModuleState(normalizedSpeed, desiredStates[i].angle));
+                newStates.add(new SwerveModuleState(normalizedSpeed, new Rotation2d(-desiredStates[i].angle.getRadians())));
+                //negative fixes problem idk how tho
             }
             newStates.toArray(desiredStates);    
         }
@@ -178,7 +179,7 @@ public class SwerveSubsystem extends SubsystemBase {
         catch(Exception o){
             System.err.println("memory overflow caused by normaliztions");
             stopModules();
-        }*/
+        }
     
         //Logger.recordOutput("MyStates", desiredStates);
         new Thread(()->{

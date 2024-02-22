@@ -25,7 +25,7 @@ public final class Constants {
     public static final int kDriverControllerPort = 0;
   }
 
-public static final double kPTurning = 12;
+public static final double kPTurning = 16;
 public static final double kPDriving = 2;
 public static final double WHEELRADIUS = 0.21;
 

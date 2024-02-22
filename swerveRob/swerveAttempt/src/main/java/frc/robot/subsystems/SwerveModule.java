@@ -23,7 +23,7 @@ public class SwerveModule {
 
      //private final SimpleMotorFeedforward driveMotFF = new SimpleMotorFeedforward(Constants.ks, Constants.kv);
     
-     private final ProfiledPIDController proTurn = new ProfiledPIDController(Constants.kPTurning, 0,0, new TrapezoidProfile.Constraints(Math.PI*2,Math.PI));
+     private final ProfiledPIDController proTurn = new ProfiledPIDController(Constants.kPTurning, 0,0, new TrapezoidProfile.Constraints(Constants.kTeleDriveMaxAngularSpeedRadiansPerSecond,Constants.kTeleDriveMaxAngularAccelerationUnitsPerSecond));
      private final ProfiledPIDController proDrive = new ProfiledPIDController(Constants.kPDriving, 0, 0, new TrapezoidProfile.Constraints(Constants.kPhysicalMaxSpeedMetersPerSecond, 3));
      private final AnalogInput absoluteEncoder;
      private final boolean absoluteEncoderReversed;
@@ -123,7 +123,7 @@ public class SwerveModule {
         state = SwerveModuleState.optimize(state, getState().angle);
         
        driveVolts = proDrive.calculate(getDriveVelocity(), state.speedMetersPerSecond);
-        turnVolts = proTurn.calculate(getAbsoluteEncoderRad(), -state.angle.getRadians());
+        turnVolts = proTurn.calculate(getAbsoluteEncoderRad(), state.angle.getRadians());
         //double speed = state.speedMetersPerSecond/Constants.kTeleDriveMaxSpeedMetersPerSecond;
         driveMotor.setVoltage(driveVolts); // double check rotor ratio
        // driveMotor.set(speed);
