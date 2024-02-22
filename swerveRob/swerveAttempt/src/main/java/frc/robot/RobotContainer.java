@@ -67,7 +67,7 @@ public class RobotContainer {
         swerveSubsystem.setDefaultCommand(
         new drivingCommand(
             swerveSubsystem,
-            () -> xc.getLeftY(),
+            () -> -xc.getLeftY(),
             () -> xc.getLeftX(),
             () -> xc.getRightX(),
             () -> xc.getYButton()));

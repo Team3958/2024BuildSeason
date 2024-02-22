@@ -120,10 +120,10 @@ public class SwerveModule {
         System.err.println("state m/s likely null");
     }
         
-        state = SwerveModuleState.optimize(state, getState().angle);
+        state = SwerveModuleState.optimize(state, new Rotation2d(-getState().angle.getRadians()));
         
        driveVolts = proDrive.calculate(getDriveVelocity(), state.speedMetersPerSecond);
-        turnVolts = proTurn.calculate(getAbsoluteEncoderRad(), state.angle.getRadians());
+        turnVolts = proTurn.calculate(getAbsoluteEncoderRad(), -state.angle.getRadians());
         //double speed = state.speedMetersPerSecond/Constants.kTeleDriveMaxSpeedMetersPerSecond;
         driveMotor.setVoltage(driveVolts); // double check rotor ratio
        // driveMotor.set(speed);
