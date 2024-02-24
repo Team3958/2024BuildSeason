@@ -23,7 +23,7 @@ public class SwerveModule {
 
      //private final SimpleMotorFeedforward driveMotFF = new SimpleMotorFeedforward(Constants.ks, Constants.kv);
     
-     private final ProfiledPIDController proTurn = new ProfiledPIDController(Constants.kPTurning, 0,0, new TrapezoidProfile.Constraints(Constants.kTeleDriveMaxAngularSpeedRadiansPerSecond,Constants.kTeleDriveMaxAngularAccelerationUnitsPerSecond));
+     private final ProfiledPIDController proTurn = new ProfiledPIDController(Constants.kPTurning, 0,0, new TrapezoidProfile.Constraints(40,40));
      private final PIDController proDrive = new PIDController(Constants.kPDriving, 0, 0);
      private final AnalogInput absoluteEncoder;
      private final boolean absoluteEncoderReversed;
@@ -58,20 +58,9 @@ public class SwerveModule {
         driveMotor.setInverted(driveMotorReversed);
         turningMotor.setInverted(turningMotorReversed);
         turningMotor.setNeutralMode(NeutralModeValue.Coast);
-        driveMotor.setNeutralMode(NeutralModeValue.Coast);
-        //proTurn.setTolerance(0.0649);
+        driveMotor.setNeutralMode(NeutralModeValue.Brake);
         
-        
-        
-
-      
-
-        
-        //velocityPidController = new PIDController(Constants.kPDriving, 0, 0);
-        //proTurn.enableContinuousInput(-absoluteEncoderOffsetRad, 2*Math.PI-absoluteEncoderOffsetRad);
         proTurn.enableContinuousInput(-Math.PI, Math.PI);
-       // dtSim = new TalonFXSimState(driveMotor);
-        //ttSim = new TalonFXSimState(turningMotor);
         reset_encoders();
     }
 
@@ -121,22 +110,18 @@ public class SwerveModule {
     catch(Exception e){
         System.err.println("state m/s likely null");
     }
-        
-        //state = SwerveModuleState.optimize(state, new Rotation2d(getState().angle.getRadians()));
-        //replacing optimzize
-        //might need to get rid of negative in Math.abs()
-        if(Math.abs(-state.angle.getDegrees()+getState().angle.getDegrees())> 90){
+        //state = SwerveModuleState.optimize(state, new Rotation2d(getTurningPosition()));
+        if(Math.abs(-state.angle.getDegrees()+getState().angle.getDegrees())> 90 && Constants.isTurningCCW==false){
             state = new SwerveModuleState(-state.speedMetersPerSecond, new Rotation2d((state.angle.getRadians()-Math.PI)%(Math.PI)));
         }
+        else if(-state.angle.getDegrees()+getState().angle.getDegrees()> 90 && Constants.isTurningCCW == true){
+            state = new SwerveModuleState(state.speedMetersPerSecond, new Rotation2d((state.angle.getRadians()-Math.PI)%(Math.PI)));
+        }
         
-       driveVolts = proDrive.calculate(getDriveVelocity(), state.speedMetersPerSecond);
+        driveVolts = proDrive.calculate(getDriveVelocity(), state.speedMetersPerSecond);
         turnVolts = proTurn.calculate(getAbsoluteEncoderRad(), -state.angle.getRadians());
-        //double speed = state.speedMetersPerSecond/Constants.kTeleDriveMaxSpeedMetersPerSecond;
-        driveMotor.setVoltage(driveVolts); // double check rotor ratio
-       // driveMotor.set(speed);
+        driveMotor.setVoltage(driveVolts); 
         turningMotor.setVoltage(turnVolts);
-        //SmartDashboard.putString("Swerve[" + absoluteEncoder.getChannel() + "] state", state.toString());
-        //SmartDashboard.putNumber("fl motro speed", state.speedMetersPerSecond);
         
     }
 

@@ -58,9 +58,10 @@ public static final boolean kBackLeftDriveAbsoluteEncoderReversed = false;
 public static final int kBackRightDriveMotorPort = 24;
 public static final int kBackRightTurningMotorPort = 26;
 public static  boolean kBackRightDriveEncoderReversed = false ;
+public static boolean isTurningCCW = false;
 public static final boolean kBackRightTurningEncoderReversed = false;
 public static final int kBackRightDriveAbsoluteEncoderPort = 2;
-public static final double kBackRightDriveAbsoluteEncoderOffsetRad = 0.71+2.15;
+public static final double kBackRightDriveAbsoluteEncoderOffsetRad = 1.71+2.15;
 public static final boolean kBackRightDriveAbsoluteEncoderReversed = false;
 
 public static final double kWheelBase = 0.752475;
@@ -85,7 +86,7 @@ public static final double kTeleDriveMaxAccelerationUnitsPerSecond = 3;
 public static final double kTeleDriveMaxAngularAccelerationUnitsPerSecond = 40;
 public static final double kDeadband = 0.15;
 public static final double kTeleDriveMaxSpeedMetersPerSecond = 4;
-public static final double kTeleDriveMaxAngularSpeedRadiansPerSecond = 40;
+public static final double kTeleDriveMaxAngularSpeedRadiansPerSecond = 6;
 public static final double kdriveGearRation = 1/12;
 public static final String kCamName = null;
 
@@ -103,6 +104,16 @@ public static final double thetaP = 0;
 // driving feed forward
 public static final double ks = 0.01;
 public static final double kv = 1;
+
+//xc
+public static final int buttonA = 1;
+public static final int PCM = 2;
+public static final int top_flywheel = 0;
+public static final int bottom_flywheel = 0;
+public static final double kMaxFlywheelVoltage = 0;
+public static final double kMaxFlywheelCurrent = 0;
+public static final boolean top_flywheel_reversed = false;
+public static final boolean bottom_flywheel_reversed = false;
 
 
 

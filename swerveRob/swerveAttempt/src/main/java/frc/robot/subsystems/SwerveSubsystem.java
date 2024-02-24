@@ -17,7 +17,8 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-
+import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.networktables.StructArrayPublisher;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -28,7 +29,7 @@ public class SwerveSubsystem extends SubsystemBase {
     //private PhotonCamera cam = new PhotonCamera(Constants.kCamName);
     double sum;
     boolean flagOverDrive;
-    List<SwerveModuleState> newStates = new ArrayList<>();
+;
     double normalizedSpeed;
     
     private final SwerveModule frontLeft = new SwerveModule(
@@ -77,6 +78,8 @@ public class SwerveSubsystem extends SubsystemBase {
 
     private final SwerveDriveOdometry odometer = new SwerveDriveOdometry(Constants.kDriveKinematics, new Rotation2d(0), swerveModPose);
     private final SwerveDrivePoseEstimator poseEstimator = new SwerveDrivePoseEstimator(Constants.kDriveKinematics, getRotation2d(), swerveModPose, getPose());
+    StructArrayPublisher<SwerveModuleState> publisher = NetworkTableInstance.getDefault()
+    .getStructArrayTopic("MyStates", SwerveModuleState.struct).publish();
 
     double xinput;
     
@@ -91,6 +94,7 @@ public class SwerveSubsystem extends SubsystemBase {
         }).start();
 
     }
+
     public void updateSwerveModPose(){
         this.swerveModPose = new SwerveModulePosition[]{
             //frontLeft.getSwerveModulePosition(),
@@ -105,8 +109,7 @@ public class SwerveSubsystem extends SubsystemBase {
     }
 
     public double getHeading() {
-       // return Math.IEEEremainder(gyro.getAngle(), 360);
-       return 0;
+       return Math.IEEEremainder(gyro.getAngle(), 360);
     }
 
     public Rotation2d getRotation2d() {
@@ -115,6 +118,13 @@ public class SwerveSubsystem extends SubsystemBase {
 
     public Pose2d getPose() {
         return odometer.getPoseMeters();
+    }
+    public SwerveModuleState[] getStates(){
+        return new SwerveModuleState[]
+        {frontLeft.getState(),
+        frontRight.getState(),
+        backLeft.getState(),
+        backRight.getState()};
     }
 
     public void resetOdometry(Pose2d pose) {
@@ -137,12 +147,15 @@ public class SwerveSubsystem extends SubsystemBase {
         }*/
         
         updateShuffleBoard();
+        
+        publisher.set(getStates());
     }
     private void updateShuffleBoard(){
         SmartDashboard.putNumber("fl encoder angle", frontLeft.getAbsoluteEncoderRad());
         SmartDashboard.putNumber("fr encoder angle", frontRight.getAbsoluteEncoderRad());
         SmartDashboard.putNumber("bl encoder angle", backLeft.getAbsoluteEncoderRad());
         SmartDashboard.putNumber("br encoder angle", backRight.getAbsoluteEncoderRad());
+        SmartDashboard.putNumber("Gyro", getHeading());
     }
 
     public void stopModules() {
@@ -156,30 +169,6 @@ public class SwerveSubsystem extends SubsystemBase {
         //what it was supposed to do
         //Constants.kDriveKinematics.normalizeWheelSpeeds(desiredStates, Constants.kPhysicalMaxSpeedMetersPerSecond);
         SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates, Constants.kPhysicalMaxSpeedMetersPerSecond);
-       
-         /*try{
-            sum = 0;
-            flagOverDrive = false;
-            for(int i = 0; i<3; i++){
-            if(desiredStates[i].speedMetersPerSecond > Constants.kPhysicalMaxSpeedMetersPerSecond){
-                flagOverDrive = true;
-            }
-            sum += Math.abs(desiredStates[i].speedMetersPerSecond);
-        }
-        if(flagOverDrive == true){
-            newStates.clear();
-            for(int i = 0; i<3;i++){
-                normalizedSpeed = (desiredStates[i].speedMetersPerSecond/sum)*Constants.kPhysicalMaxSpeedMetersPerSecond;
-                newStates.add(new SwerveModuleState(normalizedSpeed, new Rotation2d(desiredStates[i].angle.getRadians())));
-                //negative fixes problem idk how tho
-            }
-            newStates.toArray(desiredStates);    
-        }
-        }
-        catch(Exception o){
-            System.err.println("memory overflow caused by normaliztions");
-            stopModules();
-        }*/
     
         //Logger.recordOutput("MyStates", desiredStates);
         new Thread(()->{
@@ -193,7 +182,7 @@ public class SwerveSubsystem extends SubsystemBase {
         }
     }
         ).start();
-
-        SmartDashboard.putNumber("fr turn state", desiredStates[1].angle.getDegrees());
+    
+        SmartDashboard.putNumber("fr drive state", desiredStates[1].speedMetersPerSecond);
     }
 }

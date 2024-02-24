@@ -35,7 +35,7 @@ import frc.robot.subsystems.SwerveSubsystem;
 public class RobotContainer {
 
     private final SwerveSubsystem swerveSubsystem = new SwerveSubsystem();
-   // private final PDPSubsystem m_pdp = new PDPSubsystem();
+    private final PDPSubsystem m_pdp = new PDPSubsystem();
     private final XboxController xc = new XboxController(0);
     private SwerveControllerCommand controllerCommand;
     
@@ -70,7 +70,7 @@ public class RobotContainer {
             () -> -xc.getLeftY(),
             () -> xc.getLeftX(),
             () -> xc.getRightX(),
-            () -> xc.getYButton()));
+            () -> !xc.getYButton()));
         
 
         configureButtonBindings();
@@ -81,7 +81,7 @@ public class RobotContainer {
     
 
     private void configureButtonBindings() {
-        new JoystickButton(xc, 2).onTrue(new zeroHeading(swerveSubsystem));
+        new JoystickButton(xc, Constants.buttonA).onTrue(new zeroHeading(swerveSubsystem));
     }
 
     public Command getAutonomousCommand() {
