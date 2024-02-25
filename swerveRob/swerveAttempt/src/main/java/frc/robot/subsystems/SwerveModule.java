@@ -28,8 +28,7 @@ public class SwerveModule {
      private final AnalogInput absoluteEncoder;
      private final boolean absoluteEncoderReversed;
     private final double absoluteEncoderOffsetRad;
-    //TalonFXSimState dtSim;
-    //TalonFXSimState ttSim;
+    private final SimpleMotorFeedforward driveFF = new SimpleMotorFeedforward(Constants.ks, Constants.kv);
     double driveVolts;
     double turnVolts;
     
@@ -118,7 +117,7 @@ public class SwerveModule {
             state = new SwerveModuleState(state.speedMetersPerSecond, new Rotation2d((state.angle.getRadians()-Math.PI)%(Math.PI)));
         }
         
-        driveVolts = proDrive.calculate(getDriveVelocity(), state.speedMetersPerSecond);
+        driveVolts = driveFF.calculate(state.speedMetersPerSecond)+proDrive.calculate(getDriveVelocity(), state.speedMetersPerSecond);
         turnVolts = proTurn.calculate(getAbsoluteEncoderRad(), -state.angle.getRadians());
         driveMotor.setVoltage(driveVolts); 
         turningMotor.setVoltage(turnVolts);

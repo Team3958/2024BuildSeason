@@ -7,18 +7,26 @@ import java.util.List;
 import org.photonvision.PhotonCamera;
 
 import com.kauailabs.navx.frc.AHRS;
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.commands.PathPlannerAuto;
+import com.pathplanner.lib.path.PathPlannerPath;
+import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
+import com.pathplanner.lib.util.PIDConstants;
+import com.pathplanner.lib.util.ReplanningConfig;
 
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructArrayPublisher;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -81,7 +89,6 @@ public class SwerveSubsystem extends SubsystemBase {
     StructArrayPublisher<SwerveModuleState> publisher = NetworkTableInstance.getDefault()
     .getStructArrayTopic("MyStates", SwerveModuleState.struct).publish();
 
-    double xinput;
     
     public SwerveSubsystem() {
         //poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(0.5,0.5,20));
@@ -92,7 +99,25 @@ public class SwerveSubsystem extends SubsystemBase {
             } catch (Exception e) {
             }
         }).start();
-
+        
+        AutoBuilder.configureHolonomic(this::getPose, 
+        this::resetOdometry, 
+        this::getRelatChassisSpeeds, 
+        this::setStatesFromChassisSpeeds, 
+        new HolonomicPathFollowerConfig(new PIDConstants(5,0,0),
+            new PIDConstants(5,0,0),
+            4.5, 
+            0.4,
+            new ReplanningConfig()),
+        () ->{
+            var alliance = DriverStation.getAlliance();
+              if (alliance.isPresent()) {
+                return alliance.get() == DriverStation.Alliance.Red;
+              }
+              return false;
+        },  
+        this);
+        
     }
 
     public void updateSwerveModPose(){
@@ -129,6 +154,12 @@ public class SwerveSubsystem extends SubsystemBase {
 
     public void resetOdometry(Pose2d pose) {
         odometer.resetPosition(getRotation2d(),swerveModPose ,pose);
+    }
+    public void resetPoseforAuto(){
+        odometer.resetPosition(getRotation2d(),swerveModPose, new Pose2d());
+    }
+    public ChassisSpeeds getRelatChassisSpeeds(){
+        return Constants.kDriveKinematics.toChassisSpeeds(getStates());
     }
 
     @Override
@@ -182,7 +213,10 @@ public class SwerveSubsystem extends SubsystemBase {
         }
     }
         ).start();
-    
-        SmartDashboard.putNumber("fr drive state", desiredStates[1].speedMetersPerSecond);
     }
+    public void setStatesFromChassisSpeeds(ChassisSpeeds speeds){
+        setModuleStates(Constants.kDriveKinematics.toSwerveModuleStates(speeds));
+    }
+    
 }
+

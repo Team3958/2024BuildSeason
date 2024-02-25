@@ -6,15 +6,15 @@
     "data": {
       "commands": [
         {
-          "type": "path",
+          "type": "named",
           "data": {
-            "pathName": "New Path"
+            "name": "zero"
           }
         },
         {
-          "type": "wait",
+          "type": "path",
           "data": {
-            "waitTime": 2.0
+            "pathName": "New Path"
           }
         }
       ]

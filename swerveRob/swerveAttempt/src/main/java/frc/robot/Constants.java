@@ -24,9 +24,11 @@ public final class Constants {
   public static class OperatorConstants {
     public static final int kDriverControllerPort = 0;
   }
-
-public static final double kPTurning = 10;
-public static final double kPDriving = 2;
+  
+  public static final double kPTurning = 10;
+  public static final double kPDriving = 0.1;
+  public static final double ks = 0.01;
+  public static final double kv = 0;
 public static final double WHEELRADIUS = 0.21;
 
 
@@ -102,12 +104,14 @@ public static final double yP = 0;
 public static final double thetaP = 0;
 
 // driving feed forward
-public static final double ks = 0.01;
-public static final double kv = 1;
 
 //xc
 public static final int buttonA = 1;
+
+//pneumatics
 public static final int PCM = 2;
+
+//shooter
 public static final int top_flywheel = 0;
 public static final int bottom_flywheel = 0;
 public static final double kMaxFlywheelVoltage = 0;

@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.opencv.core.Mat;
 
+import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.commands.PathfindThenFollowPathHolonomic;
@@ -31,6 +32,7 @@ import frc.robot.commands.drivingCommand;
 import frc.robot.commands.zeroHeading;
 import frc.robot.subsystems.PDPSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
+import frc.robot.subsystems.pneumaticSubsystem;
 
 public class RobotContainer {
 
@@ -38,8 +40,9 @@ public class RobotContainer {
     private final PDPSubsystem m_pdp = new PDPSubsystem();
     private final XboxController xc = new XboxController(0);
     private SwerveControllerCommand controllerCommand;
+    private final pneumaticSubsystem m_PneumaticSubsystem = new pneumaticSubsystem();
     
-    //PathPlannerAuto N = new PathPlannerAuto("New Auto");
+    PathPlannerAuto N = new PathPlannerAuto("New Auto");
     PathfindThenFollowPathHolonomic findPath;
 
     
@@ -56,13 +59,14 @@ public class RobotContainer {
         ProfiledPIDController thetaController = new ProfiledPIDController(Constants.thetaP, 0, 0, new TrapezoidProfile.Constraints(2*Math.PI,2*Math.PI));
         thetaController.enableContinuousInput(-Math.PI, Math.PI);
         HolonomicDriveController hController = new HolonomicDriveController(xController, yController, thetaController);
-
         TrajectoryConfig config = new TrajectoryConfig(4, 4);
         edu.wpi.first.math.trajectory.Trajectory path = TrajectoryGenerator.generateTrajectory( new Pose2d(0, 0, new Rotation2d(0)),
         List.of(new Translation2d(1, 1), new Translation2d(2, -1)),
         new Pose2d(3, 0, new Rotation2d(0)),
         config);
         controllerCommand = new SwerveControllerCommand(path, () ->swerveSubsystem.getPose(), Constants.kDriveKinematics, hController, swerveSubsystem::setModuleStates, swerveSubsystem);
+        
+        
         // set swerve drive
         swerveSubsystem.setDefaultCommand(
         new drivingCommand(
@@ -74,11 +78,14 @@ public class RobotContainer {
         
 
         configureButtonBindings();
-    //NamedCommands.registerCommand("zero", new zeroHeading(swerveSubsystem));
+        registerCommands();
+    
     //findPath = new PathfindThenFollowPathHolonomic(null, null, null, null, null, null, null, null);
         
     }
-    
+    private void registerCommands(){
+        NamedCommands.registerCommand("zero", new zeroHeading(swerveSubsystem));
+    }
 
     private void configureButtonBindings() {
         new JoystickButton(xc, Constants.buttonA).onTrue(new zeroHeading(swerveSubsystem));
@@ -86,6 +93,6 @@ public class RobotContainer {
 
     public Command getAutonomousCommand() {
         // 1. Create trajectory settings
-        return controllerCommand;
+        return N;
     }
 }
