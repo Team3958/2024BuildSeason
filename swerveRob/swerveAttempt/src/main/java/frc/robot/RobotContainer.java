@@ -40,7 +40,7 @@ public class RobotContainer {
     private final PDPSubsystem m_pdp = new PDPSubsystem();
     private final XboxController xc = new XboxController(0);
     private SwerveControllerCommand controllerCommand;
-    private final pneumaticSubsystem m_PneumaticSubsystem = new pneumaticSubsystem();
+    //private final pneumaticSubsystem m_PneumaticSubsystem = new pneumaticSubsystem();
     
     PathPlannerAuto N = new PathPlannerAuto("New Auto");
     PathfindThenFollowPathHolonomic findPath;

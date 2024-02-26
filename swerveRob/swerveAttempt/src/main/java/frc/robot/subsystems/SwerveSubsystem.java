@@ -104,9 +104,10 @@ public class SwerveSubsystem extends SubsystemBase {
         this::resetOdometry, 
         this::getRelatChassisSpeeds, 
         this::setStatesFromChassisSpeeds, 
-        new HolonomicPathFollowerConfig(new PIDConstants(5,0,0),
+        new HolonomicPathFollowerConfig(
             new PIDConstants(5,0,0),
-            4.5, 
+            new PIDConstants(5,0,0),
+            3.5, 
             0.4,
             new ReplanningConfig()),
         () ->{
@@ -155,9 +156,7 @@ public class SwerveSubsystem extends SubsystemBase {
     public void resetOdometry(Pose2d pose) {
         odometer.resetPosition(getRotation2d(),swerveModPose ,pose);
     }
-    public void resetPoseforAuto(){
-        odometer.resetPosition(getRotation2d(),swerveModPose, new Pose2d());
-    }
+    
     public ChassisSpeeds getRelatChassisSpeeds(){
         return Constants.kDriveKinematics.toChassisSpeeds(getStates());
     }
@@ -182,11 +181,15 @@ public class SwerveSubsystem extends SubsystemBase {
         publisher.set(getStates());
     }
     private void updateShuffleBoard(){
-        SmartDashboard.putNumber("fl encoder angle", frontLeft.getAbsoluteEncoderRad());
+        /*SmartDashboard.putNumber("fl encoder angle", frontLeft.getAbsoluteEncoderRad());
         SmartDashboard.putNumber("fr encoder angle", frontRight.getAbsoluteEncoderRad());
         SmartDashboard.putNumber("bl encoder angle", backLeft.getAbsoluteEncoderRad());
         SmartDashboard.putNumber("br encoder angle", backRight.getAbsoluteEncoderRad());
-        SmartDashboard.putNumber("Gyro", getHeading());
+        SmartDashboard.putNumber("Gyro", getHeading());*/
+        SmartDashboard.putNumber("fl velcity", frontLeft.getDriveVelocity());
+        SmartDashboard.putNumber("fr velocity", frontRight.getDriveVelocity());
+        SmartDashboard.putNumber("bl velocity", backLeft.getDriveVelocity());
+        SmartDashboard.putNumber("br velocity", backRight.getDriveVelocity());
     }
 
     public void stopModules() {

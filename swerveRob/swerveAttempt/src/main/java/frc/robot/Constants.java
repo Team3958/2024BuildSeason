@@ -27,8 +27,8 @@ public final class Constants {
   
   public static final double kPTurning = 10;
   public static final double kPDriving = 0.1;
-  public static final double ks = 0.01;
-  public static final double kv = 0;
+  public static final double ks = 0.145;
+  public static final double kv = 0.90;
 public static final double WHEELRADIUS = 0.21;
 
 
@@ -59,7 +59,7 @@ public static final boolean kBackLeftDriveAbsoluteEncoderReversed = false;
 
 public static final int kBackRightDriveMotorPort = 24;
 public static final int kBackRightTurningMotorPort = 26;
-public static  boolean kBackRightDriveEncoderReversed = false ;
+public static  boolean kBackRightDriveEncoderReversed = true;
 public static boolean isTurningCCW = false;
 public static final boolean kBackRightTurningEncoderReversed = false;
 public static final int kBackRightDriveAbsoluteEncoderPort = 2;
@@ -89,7 +89,7 @@ public static final double kTeleDriveMaxAngularAccelerationUnitsPerSecond = 40;
 public static final double kDeadband = 0.15;
 public static final double kTeleDriveMaxSpeedMetersPerSecond = 4;
 public static final double kTeleDriveMaxAngularSpeedRadiansPerSecond = 6;
-public static final double kdriveGearRation = 1/12;
+public static final double kdriveGearRation = 0.0833333333333;
 public static final String kCamName = null;
 
 public static final Pose3d kFarTargetPose = new Pose3d();

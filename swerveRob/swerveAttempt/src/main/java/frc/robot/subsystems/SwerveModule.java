@@ -23,7 +23,7 @@ public class SwerveModule {
 
      //private final SimpleMotorFeedforward driveMotFF = new SimpleMotorFeedforward(Constants.ks, Constants.kv);
     
-     private final ProfiledPIDController proTurn = new ProfiledPIDController(Constants.kPTurning, 0,0, new TrapezoidProfile.Constraints(40,40));
+     private final ProfiledPIDController proTurn = new ProfiledPIDController(Constants.kPTurning, 0,0, new TrapezoidProfile.Constraints(80,140));
      private final PIDController proDrive = new PIDController(Constants.kPDriving, 0, 0);
      private final AnalogInput absoluteEncoder;
      private final boolean absoluteEncoderReversed;
@@ -73,7 +73,7 @@ public class SwerveModule {
 
     public double getDriveVelocity() {
 
-        return driveMotor.getVelocity().getValueAsDouble()*Constants.WHEELRADIUS*Constants.kdriveGearRation;
+        return (driveMotor.getVelocity().getValueAsDouble()*2*Math.PI)*Constants.WHEELRADIUS*Constants.kdriveGearRation;
     }
 
     public double getTurningVelocity() {
@@ -116,7 +116,8 @@ public class SwerveModule {
         else if(-state.angle.getDegrees()+getState().angle.getDegrees()> 90 && Constants.isTurningCCW == true){
             state = new SwerveModuleState(state.speedMetersPerSecond, new Rotation2d((state.angle.getRadians()-Math.PI)%(Math.PI)));
         }
-        
+        //driveFF.calculate(state.speedMetersPerSecond)+
+        //proDrive.calculate(getDriveVelocity(), state.speedMetersPerSecond);
         driveVolts = driveFF.calculate(state.speedMetersPerSecond)+proDrive.calculate(getDriveVelocity(), state.speedMetersPerSecond);
         turnVolts = proTurn.calculate(getAbsoluteEncoderRad(), -state.angle.getRadians());
         driveMotor.setVoltage(driveVolts); 

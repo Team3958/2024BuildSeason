@@ -82,9 +82,10 @@ public class drivingCommand extends Command {
             // Relative to robot
             chassisSpeeds = new ChassisSpeeds(xSpeed, ySpeed, turningSpeed);
         }
-        SmartDashboard.putNumber("chassis speed x", chassisSpeeds.vxMetersPerSecond);
+        SmartDashboard.putNumber("chassis desired speed x", chassisSpeeds.vxMetersPerSecond);
         SmartDashboard.putNumber("chassis speed y", chassisSpeeds.vyMetersPerSecond);
         SmartDashboard.putNumber("chassis turn", chassisSpeeds.omegaRadiansPerSecond);
+        
         // 5. Convert chassis speeds to individual module states
         moduleStates = Constants.kDriveKinematics.toSwerveModuleStates(chassisSpeeds);
 
