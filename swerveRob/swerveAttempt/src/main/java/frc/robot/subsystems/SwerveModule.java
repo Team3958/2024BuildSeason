@@ -94,7 +94,8 @@ public class SwerveModule {
         turningMotor.setPosition(getAbsoluteEncoderRad());
     }
     public SwerveModuleState getState() {
-        return new SwerveModuleState(getDriveVelocity(), new Rotation2d(getTurningPosition()));
+        //return new SwerveModuleState(getDriveVelocity(), new Rotation2d(getTurningPosition()));
+        return new SwerveModuleState(getDriveVelocity(), new Rotation2d(getAbsoluteEncoderRad()));
     }
     public SwerveModulePosition getSwerveModulePosition(){
         return new SwerveModulePosition(getDrivePosition(), new Rotation2d(getAbsoluteEncoderRad()));
@@ -109,17 +110,15 @@ public class SwerveModule {
     catch(Exception e){
         System.err.println("state m/s likely null");
     }
-        //state = SwerveModuleState.optimize(new SwerveModuleState(state.speedMetersPerSecond, new Rotation2d(-state.angle.getRadians())), new Rotation2d(getTurningPosition()));
-        /*if(Math.abs(-state.angle.getDegrees()+getState().angle.getDegrees())> 90 && Constants.isTurningCCW==false){
-            state = new SwerveModuleState(-state.speedMetersPerSecond, new Rotation2d((state.angle.getRadians()-Math.PI)%(Math.PI)));
+        //angle corrected (no more negatives)
+        state = new SwerveModuleState(state.speedMetersPerSecond, new Rotation2d(-state.angle.getRadians()));
+        double delta = state.angle.getDegrees()-getTurningPosition();
+        if(Math.abs(delta) > 90){
+            state = new SwerveModuleState(-state.speedMetersPerSecond, new Rotation2d(state.angle.getRadians()+Math.PI));
         }
-        else if(-state.angle.getDegrees()+getState().angle.getDegrees()> 90 && Constants.isTurningCCW == true){
-            state = new SwerveModuleState(state.speedMetersPerSecond, new Rotation2d((state.angle.getRadians()-Math.PI)%(Math.PI)));
-        }*/
-        //driveFF.calculate(state.speedMetersPerSecond)+
-        //proDrive.calculate(getDriveVelocity(), state.speedMetersPerSecond);
         driveVolts = driveFF.calculate(state.speedMetersPerSecond)+proDrive.calculate(getDriveVelocity(), state.speedMetersPerSecond);
-        turnVolts = proTurn.calculate(getAbsoluteEncoderRad(), -state.angle.getRadians());
+        //might need to add negative back later
+        turnVolts = proTurn.calculate(getAbsoluteEncoderRad(), state.angle.getRadians());
         driveMotor.setVoltage(driveVolts); 
         turningMotor.setVoltage(turnVolts);
         
