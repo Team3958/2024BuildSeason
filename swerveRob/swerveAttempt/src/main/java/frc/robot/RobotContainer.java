@@ -53,6 +53,9 @@ public class RobotContainer {
     //private final SendableChooser<Command> autoChooser;
 
     public RobotContainer() {
+        swerveSubsystem.zeroHeading();
+        swerveSubsystem.resetOdometry(new Pose2d());
+        
         // known way to follow paths
         PIDController xController = new PIDController(Constants.xP, 0, 0);
         PIDController yController = new PIDController(Constants.yP, 0, 0);
@@ -93,6 +96,8 @@ public class RobotContainer {
 
     public Command getAutonomousCommand() {
         // 1. Create trajectory settings
+        swerveSubsystem.zeroHeading();
+        swerveSubsystem.resetOdometry(new Pose2d());
         return N;
     }
 }

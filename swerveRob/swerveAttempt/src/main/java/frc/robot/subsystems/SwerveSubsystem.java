@@ -19,7 +19,9 @@ import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.kinematics.Odometry;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
@@ -83,8 +85,7 @@ public class SwerveSubsystem extends SubsystemBase {
         frontRight.getSwerveModulePosition(),
         backRight.getSwerveModulePosition()
      };
-
-    private final SwerveDriveOdometry odometer = new SwerveDriveOdometry(Constants.kDriveKinematics, new Rotation2d(0), swerveModPose);
+    //private final SwerveDriveOdometry odometer = new SwerveDriveOdometry(Constants.kDriveKinematics, new Rotation2d(0), swerveModPose);
     private final SwerveDrivePoseEstimator poseEstimator = new SwerveDrivePoseEstimator(Constants.kDriveKinematics, getRotation2d(), swerveModPose, getPose());
     StructArrayPublisher<SwerveModuleState> publisher = NetworkTableInstance.getDefault()
     .getStructArrayTopic("MyStates", SwerveModuleState.struct).publish();
@@ -105,9 +106,9 @@ public class SwerveSubsystem extends SubsystemBase {
         this::getRelatChassisSpeeds, 
         this::setStatesFromChassisSpeeds, 
         new HolonomicPathFollowerConfig(
-            new PIDConstants(5,0,0),
-            new PIDConstants(5,0,0),
-            3.5, 
+            new PIDConstants(2,0,0),
+            new PIDConstants(2,0,0),
+            2, 
             0.4,
             new ReplanningConfig()),
         () ->{
@@ -142,8 +143,9 @@ public class SwerveSubsystem extends SubsystemBase {
         return Rotation2d.fromDegrees(getHeading());
     }
 
-    public Pose2d getPose() {
-        return odometer.getPoseMeters();
+    public Pose2d getPose() { 
+        //return new Pose2d(new Translation2d(gyro.getDisplacementX(), gyro.getDisplacementY()), getRotation2d());
+        return poseEstimator.getEstimatedPosition();
     }
     public SwerveModuleState[] getStates(){
         return new SwerveModuleState[]
@@ -154,7 +156,8 @@ public class SwerveSubsystem extends SubsystemBase {
     }
 
     public void resetOdometry(Pose2d pose) {
-        odometer.resetPosition(getRotation2d(),swerveModPose ,pose);
+        //odometer.resetPosition(getRotation2d(),swerveModPose ,pose);
+        gyro.resetDisplacement();
     }
     
     public ChassisSpeeds getRelatChassisSpeeds(){
@@ -177,7 +180,7 @@ public class SwerveSubsystem extends SubsystemBase {
         }*/
         
         updateShuffleBoard();
-        
+        poseEstimator.update(getRotation2d(), swerveModPose);
         publisher.set(getStates());
     }
     private void updateShuffleBoard(){
@@ -190,6 +193,8 @@ public class SwerveSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("fr velocity", frontRight.getDriveVelocity());
         SmartDashboard.putNumber("bl velocity", backLeft.getDriveVelocity());
         SmartDashboard.putNumber("br velocity", backRight.getDriveVelocity());
+        SmartDashboard.putNumber("translation x", getPose().getX());
+        SmartDashboard.putNumber("translation y", getPose().getY());
     }
 
     public void stopModules() {
@@ -223,3 +228,10 @@ public class SwerveSubsystem extends SubsystemBase {
     
 }
 
+// might need to make new odometry 
+/*
+ * use x cos u and y sin u and subtract rotional values from gyro
+ * 
+ * or just gyro could work. orentaition might just have been wrong before.
+ * flip roborio*****
+ */

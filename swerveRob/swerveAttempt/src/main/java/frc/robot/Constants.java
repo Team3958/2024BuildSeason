@@ -28,7 +28,7 @@ public final class Constants {
   public static final double kPTurning = 10;
   public static final double kPDriving = 0.1;
   public static final double ks = 0.145;
-  public static final double kv = 0.90;
+  public static final double kv = 0.91;
 public static final double WHEELRADIUS = 0.21;
 
 

@@ -109,13 +109,13 @@ public class SwerveModule {
     catch(Exception e){
         System.err.println("state m/s likely null");
     }
-        //state = SwerveModuleState.optimize(state, new Rotation2d(getTurningPosition()));
-        if(Math.abs(-state.angle.getDegrees()+getState().angle.getDegrees())> 90 && Constants.isTurningCCW==false){
+        //state = SwerveModuleState.optimize(new SwerveModuleState(state.speedMetersPerSecond, new Rotation2d(-state.angle.getRadians())), new Rotation2d(getTurningPosition()));
+        /*if(Math.abs(-state.angle.getDegrees()+getState().angle.getDegrees())> 90 && Constants.isTurningCCW==false){
             state = new SwerveModuleState(-state.speedMetersPerSecond, new Rotation2d((state.angle.getRadians()-Math.PI)%(Math.PI)));
         }
         else if(-state.angle.getDegrees()+getState().angle.getDegrees()> 90 && Constants.isTurningCCW == true){
             state = new SwerveModuleState(state.speedMetersPerSecond, new Rotation2d((state.angle.getRadians()-Math.PI)%(Math.PI)));
-        }
+        }*/
         //driveFF.calculate(state.speedMetersPerSecond)+
         //proDrive.calculate(getDriveVelocity(), state.speedMetersPerSecond);
         driveVolts = driveFF.calculate(state.speedMetersPerSecond)+proDrive.calculate(getDriveVelocity(), state.speedMetersPerSecond);

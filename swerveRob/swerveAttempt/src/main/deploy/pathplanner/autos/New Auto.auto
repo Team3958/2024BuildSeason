@@ -6,15 +6,9 @@
     "data": {
       "commands": [
         {
-          "type": "named",
-          "data": {
-            "name": "zero"
-          }
-        },
-        {
           "type": "path",
           "data": {
-            "pathName": "New Path"
+            "pathName": "New New Path"
           }
         }
       ]
