@@ -86,10 +86,11 @@ public class SwerveSubsystem extends SubsystemBase {
         backRight.getSwerveModulePosition()
      };
     //private final SwerveDriveOdometry odometer = new SwerveDriveOdometry(Constants.kDriveKinematics, new Rotation2d(0), swerveModPose);
-    private final SwerveDrivePoseEstimator poseEstimator = new SwerveDrivePoseEstimator(Constants.kDriveKinematics, getRotation2d(), swerveModPose, getPose());
+    private final SwerveDrivePoseEstimator poseEstimator = new SwerveDrivePoseEstimator(Constants.kDriveKinematics, new Rotation2d(), swerveModPose, new Pose2d(new Translation2d(2,7), new Rotation2d()));
     StructArrayPublisher<SwerveModuleState> publisher = NetworkTableInstance.getDefault()
     .getStructArrayTopic("MyStates", SwerveModuleState.struct).publish();
-
+     
+     
     
     public SwerveSubsystem() {
         //poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(0.5,0.5,20));
@@ -106,11 +107,11 @@ public class SwerveSubsystem extends SubsystemBase {
         this::getRelatChassisSpeeds, 
         this::setStatesFromChassisSpeeds, 
         new HolonomicPathFollowerConfig(
-            new PIDConstants(2,0,0),
-            new PIDConstants(2,0,0),
+            new PIDConstants(35,0,0),
+            new PIDConstants(1,0,0),
             2, 
             0.4,
-            new ReplanningConfig()),
+            new ReplanningConfig(false,false)),
         () ->{
             var alliance = DriverStation.getAlliance();
               if (alliance.isPresent()) {
@@ -124,7 +125,7 @@ public class SwerveSubsystem extends SubsystemBase {
 
     public void updateSwerveModPose(){
         this.swerveModPose = new SwerveModulePosition[]{
-            //frontLeft.getSwerveModulePosition(),
+            frontLeft.getSwerveModulePosition(),
             backLeft.getSwerveModulePosition(),
             frontRight.getSwerveModulePosition(),
             backRight.getSwerveModulePosition()
@@ -157,7 +158,7 @@ public class SwerveSubsystem extends SubsystemBase {
 
     public void resetOdometry(Pose2d pose) {
         //odometer.resetPosition(getRotation2d(),swerveModPose ,pose);
-        gyro.resetDisplacement();
+        poseEstimator.resetPosition(new Rotation2d(), swerveModPose, pose);
     }
     
     public ChassisSpeeds getRelatChassisSpeeds(){
@@ -167,8 +168,6 @@ public class SwerveSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
         updateSwerveModPose();
-        //odometer.update(getRotation2d(), swerveModPose);
-       // poseEstimator.update(getRotation2d(), swerveModPose);
         //Logger.recordOutput("MyPose", getPose());
         /*var res = cam.getLatestResult();
         if (res.hasTargets()) {
@@ -184,11 +183,11 @@ public class SwerveSubsystem extends SubsystemBase {
         publisher.set(getStates());
     }
     private void updateShuffleBoard(){
-        /*SmartDashboard.putNumber("fl encoder angle", frontLeft.getAbsoluteEncoderRad());
+        SmartDashboard.putNumber("fl encoder angle", frontLeft.getAbsoluteEncoderRad());
         SmartDashboard.putNumber("fr encoder angle", frontRight.getAbsoluteEncoderRad());
         SmartDashboard.putNumber("bl encoder angle", backLeft.getAbsoluteEncoderRad());
         SmartDashboard.putNumber("br encoder angle", backRight.getAbsoluteEncoderRad());
-        SmartDashboard.putNumber("Gyro", getHeading());*/
+        SmartDashboard.putNumber("Gyro", getHeading());
         SmartDashboard.putNumber("fl velcity", frontLeft.getDriveVelocity());
         SmartDashboard.putNumber("fr velocity", frontRight.getDriveVelocity());
         SmartDashboard.putNumber("bl velocity", backLeft.getDriveVelocity());
@@ -205,25 +204,25 @@ public class SwerveSubsystem extends SubsystemBase {
     }
     
     public void setModuleStates(SwerveModuleState[] desiredStates) {
-        //what it was supposed to do
-        //Constants.kDriveKinematics.normalizeWheelSpeeds(desiredStates, Constants.kPhysicalMaxSpeedMetersPerSecond);
         SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates, Constants.kPhysicalMaxSpeedMetersPerSecond);
     
         //Logger.recordOutput("MyStates", desiredStates);
-        new Thread(()->{
-            try{
         frontLeft.setDesiredState(desiredStates[0]);
         frontRight.setDesiredState(desiredStates[1]);
         backLeft.setDesiredState(desiredStates[2]);
-        backRight.setDesiredState(desiredStates[3]);}
-        catch(Exception e){
-
-        }
+        backRight.setDesiredState(desiredStates[3]);
     }
-        ).start();
+    public void setAutoModuleStates(SwerveModuleState[] desiredStates) {
+        SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates, Constants.kPhysicalMaxSpeedMetersPerSecond);
+    
+        //Logger.recordOutput("MyStates", desiredStates);
+        frontLeft.setAutoDesiredState(desiredStates[0]);
+        frontRight.setAutoDesiredState(desiredStates[1]);
+        backLeft.setAutoDesiredState(desiredStates[2]);
+        backRight.setAutoDesiredState(desiredStates[3]);
     }
     public void setStatesFromChassisSpeeds(ChassisSpeeds speeds){
-        setModuleStates(Constants.kDriveKinematics.toSwerveModuleStates(speeds));
+        setAutoModuleStates(Constants.kDriveKinematics.toSwerveModuleStates(speeds));
     }
     
 }

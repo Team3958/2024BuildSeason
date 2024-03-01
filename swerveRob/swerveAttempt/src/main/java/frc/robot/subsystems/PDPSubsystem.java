@@ -20,5 +20,6 @@ public class PDPSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("PDP voltage", pdp.getVoltage());
     SmartDashboard.putNumber("PDP current", pdp.getTotalCurrent());
     SmartDashboard.putNumber("PDP power", pdp.getTotalPower());
+    //pdp.getCurrent(2);
   }
 }

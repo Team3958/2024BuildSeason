@@ -28,14 +28,14 @@ public final class Constants {
   public static final double kPTurning = 10;
   public static final double kPDriving = 0.1;
   public static final double ks = 0.145;
-  public static final double kv = 0.91;
+  public static final double kv = 0.55;
 public static final double WHEELRADIUS = 0.21;
 
 
 // define swerve
 public static final int kFrontLeftDriveMotorPort = 6;
 public static final int kFrontLeftTurningMotorPort = 31;
-public static  boolean kFrontLeftDriveEncoderReversed = true;
+public static final boolean kFrontLeftDriveEncoderReversed = true;
 public static final boolean kFrontLeftTurningEncoderReversed = false;
 public static final int kFrontLeftDriveAbsoluteEncoderPort = 0;
 public static final double kFrontLeftDriveAbsoluteEncoderOffsetRad = 1.64;
@@ -43,7 +43,7 @@ public static final boolean kFrontLeftDriveAbsoluteEncoderReversed = false;
 
 public static final int kFrontRightDriveMotorPort = 25;
 public static final int kFrontRightTurningMotorPort = 27;
-public static  boolean kFrontRightDriveEncoderReversed = true;
+public static final boolean kFrontRightDriveEncoderReversed = true;
 public static final boolean kFrontRightTurningEncoderReversed = false;
 public static final int kFrontRightDriveAbsoluteEncoderPort = 1;
 public static final double kFrontRightDriveAbsoluteEncoderOffsetRad = 4.15;
@@ -51,7 +51,7 @@ public static final boolean kFrontRightDriveAbsoluteEncoderReversed = false;
 
 public static final int kBackLeftDriveMotorPort = 20;
 public static final int kBackLeftTurningMotorPort = 23;
-public static  boolean kBackLeftDriveEncoderReversed = true;
+public static final boolean kBackLeftDriveEncoderReversed = true;
 public static final boolean kBackLeftTurningEncoderReversed = false;
 public static final int kBackLeftDriveAbsoluteEncoderPort = 3;
 public static final double kBackLeftDriveAbsoluteEncoderOffsetRad = 5.16;
@@ -59,8 +59,7 @@ public static final boolean kBackLeftDriveAbsoluteEncoderReversed = false;
 
 public static final int kBackRightDriveMotorPort = 24;
 public static final int kBackRightTurningMotorPort = 26;
-public static  boolean kBackRightDriveEncoderReversed = true;
-public static boolean isTurningCCW = false;
+public static  final boolean kBackRightDriveEncoderReversed = true;
 public static final boolean kBackRightTurningEncoderReversed = false;
 public static final int kBackRightDriveAbsoluteEncoderPort = 2;
 public static final double kBackRightDriveAbsoluteEncoderOffsetRad = 1.71+2.15;
@@ -68,6 +67,7 @@ public static final boolean kBackRightDriveAbsoluteEncoderReversed = false;
 
 public static final double kWheelBase = 0.752475;
 public static final double kTrackWidth= 0.76835;
+public static boolean isTurningCCW = false;
 
 public static final Translation2d leftFrontModule = new Translation2d(kWheelBase / 2, -kTrackWidth / 2);
 public static final Translation2d leftBackModule = new Translation2d(kWheelBase / 2, kTrackWidth / 2);
@@ -78,18 +78,18 @@ public static final SwerveDriveKinematics kDriveKinematics = new SwerveDriveKine
   leftFrontModule,
   leftBackModule,
   rightFrontModule,
-  rightBackModule);// rb module
-public static final double kPhysicalMaxSpeedMetersPerSecond = 8;
+  rightBackModule);
+public static final double kPhysicalMaxSpeedMetersPerSecond = 12;
 public static final double kPThetaController = 0.05;
 public static final double kThetaControllerConstraints = 0;
 public static final double kPXController = 0.05;
 public static final double kPYController = 0.05;
-public static final double kTeleDriveMaxAccelerationUnitsPerSecond = 3;
-public static final double kTeleDriveMaxAngularAccelerationUnitsPerSecond = 40;
+public static final double kTeleDriveMaxAccelerationUnitsPerSecond = 4;
+public static final double kTeleDriveMaxAngularAccelerationUnitsPerSecond = 8;
 public static final double kDeadband = 0.15;
-public static final double kTeleDriveMaxSpeedMetersPerSecond = 4;
-public static final double kTeleDriveMaxAngularSpeedRadiansPerSecond = 6;
-public static final double kdriveGearRation = 0.0833333333333;
+public static final double kTeleDriveMaxSpeedMetersPerSecond = 6;
+public static final double kTeleDriveMaxAngularSpeedRadiansPerSecond = 8;
+public static final double kdriveGearRation = 0.1481481481;//0.1481481481
 public static final String kCamName = null;
 
 public static final Pose3d kFarTargetPose = new Pose3d();
@@ -114,8 +114,8 @@ public static final int PCM = 2;
 //shooter
 public static final int top_flywheel = 0;
 public static final int bottom_flywheel = 0;
-public static final double kMaxFlywheelVoltage = 0;
-public static final double kMaxFlywheelCurrent = 0;
+public static final double kMaxFlywheelVoltage = 12;
+public static final double kMaxFlywheelCurrent = 30;
 public static final boolean top_flywheel_reversed = false;
 public static final boolean bottom_flywheel_reversed = false;
 

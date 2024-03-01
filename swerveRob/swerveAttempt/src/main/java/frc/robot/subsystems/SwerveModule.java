@@ -5,6 +5,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.sim.TalonFXSimState;
 
+import edu.wpi.first.math.controller.BangBangController;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
@@ -64,7 +65,7 @@ public class SwerveModule {
     }
 
     public double getDrivePosition() {
-        return driveMotor.getPosition().getValueAsDouble()*Constants.WHEELRADIUS*Constants.kdriveGearRation;
+        return driveMotor.getPosition().getValueAsDouble()*Constants.WHEELRADIUS*Constants.kdriveGearRation*2*Math.PI;
     }
 
     public double getTurningPosition() {
@@ -113,16 +114,37 @@ public class SwerveModule {
         //angle corrected (no more negatives)
         state = new SwerveModuleState(state.speedMetersPerSecond, new Rotation2d(-state.angle.getRadians()));
         double delta = state.angle.getDegrees()-getTurningPosition();
-        if(Math.abs(delta) > 90){
-            state = new SwerveModuleState(-state.speedMetersPerSecond, new Rotation2d(state.angle.getRadians()+Math.PI));
-        }
+        /*if(Math.abs(delta) > 90){
+            state = new SwerveModuleState(-state.speedMetersPerSecond, new Rotation2d((state.angle.getRadians()+Math.PI)));
+        }*/
         driveVolts = driveFF.calculate(state.speedMetersPerSecond)+proDrive.calculate(getDriveVelocity(), state.speedMetersPerSecond);
-        //might need to add negative back later
         turnVolts = proTurn.calculate(getAbsoluteEncoderRad(), state.angle.getRadians());
         driveMotor.setVoltage(driveVolts); 
         turningMotor.setVoltage(turnVolts);
         
     }
+     public void setAutoDesiredState(SwerveModuleState state) {
+        try{if (Math.abs(state.speedMetersPerSecond) < 0.1) {
+            stop();
+            return;
+        }
+    }
+    catch(Exception e){
+        System.err.println("state m/s likely null");
+    }
+        //angle corrected (no more negatives)
+        state = new SwerveModuleState(state.speedMetersPerSecond, new Rotation2d(-state.angle.getRadians()-Math.PI));
+        double delta = state.angle.getDegrees()-getTurningPosition();
+        /*if(Math.abs(delta) > 90){
+            state = new SwerveModuleState(-state.speedMetersPerSecond, new Rotation2d((state.angle.getRadians()+Math.PI)));
+        }*/
+        driveVolts = driveFF.calculate(state.speedMetersPerSecond)+proDrive.calculate(getDriveVelocity(), state.speedMetersPerSecond);
+        turnVolts = proTurn.calculate(getAbsoluteEncoderRad(), state.angle.getRadians());
+        driveMotor.setVoltage(driveVolts); 
+        turningMotor.setVoltage(turnVolts);
+        
+    }
+
 
     public void stop() {
         driveMotor.set(0);
