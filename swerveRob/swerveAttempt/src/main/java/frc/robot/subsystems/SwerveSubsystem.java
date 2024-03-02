@@ -86,13 +86,13 @@ public class SwerveSubsystem extends SubsystemBase {
         backRight.getSwerveModulePosition()
      };
     //private final SwerveDriveOdometry odometer = new SwerveDriveOdometry(Constants.kDriveKinematics, new Rotation2d(0), swerveModPose);
-    private final SwerveDrivePoseEstimator poseEstimator = new SwerveDrivePoseEstimator(Constants.kDriveKinematics, new Rotation2d(), swerveModPose, new Pose2d(new Translation2d(2,7), new Rotation2d()));
+    private final SwerveDrivePoseEstimator poseEstimator ;
     StructArrayPublisher<SwerveModuleState> publisher = NetworkTableInstance.getDefault()
     .getStructArrayTopic("MyStates", SwerveModuleState.struct).publish();
-     
+    private final Pose2d initPose;
      
     
-    public SwerveSubsystem() {
+    public SwerveSubsystem(Pose2d initpose) {
         //poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(0.5,0.5,20));
         new Thread(() -> {
             try {
@@ -101,14 +101,15 @@ public class SwerveSubsystem extends SubsystemBase {
             } catch (Exception e) {
             }
         }).start();
-        
+        this.initPose = initpose;
+        poseEstimator = new SwerveDrivePoseEstimator(Constants.kDriveKinematics, new Rotation2d(), swerveModPose, initpose);
         AutoBuilder.configureHolonomic(this::getPose, 
         this::resetOdometry, 
         this::getRelatChassisSpeeds, 
         this::setStatesFromChassisSpeeds, 
         new HolonomicPathFollowerConfig(
-            new PIDConstants(35,0,0),
-            new PIDConstants(1,0,0),
+            new PIDConstants(5,0,0),
+            new PIDConstants(5,0,0),
             2, 
             0.4,
             new ReplanningConfig(false,false)),
@@ -146,7 +147,8 @@ public class SwerveSubsystem extends SubsystemBase {
 
     public Pose2d getPose() { 
         //return new Pose2d(new Translation2d(gyro.getDisplacementX(), gyro.getDisplacementY()), getRotation2d());
-        return poseEstimator.getEstimatedPosition();
+        Pose2d dis = poseEstimator.getEstimatedPosition();
+        return new Pose2d(new Translation2d(dis.getX()+initPose.getX(),dis.getY()+initPose.getY()), dis.getRotation());
     }
     public SwerveModuleState[] getStates(){
         return new SwerveModuleState[]
@@ -158,7 +160,7 @@ public class SwerveSubsystem extends SubsystemBase {
 
     public void resetOdometry(Pose2d pose) {
         //odometer.resetPosition(getRotation2d(),swerveModPose ,pose);
-        poseEstimator.resetPosition(new Rotation2d(), swerveModPose, pose);
+        poseEstimator.resetPosition(pose.getRotation(), swerveModPose, pose);
     }
     
     public ChassisSpeeds getRelatChassisSpeeds(){

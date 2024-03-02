@@ -30,17 +30,20 @@ import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.drivingCommand;
 import frc.robot.commands.zeroHeading;
+import frc.robot.commands.climber.climbRetrack;
+import frc.robot.commands.climber.climberUP;
 import frc.robot.subsystems.PDPSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.subsystems.pneumaticSubsystem;
 
 public class RobotContainer {
 
-    private final SwerveSubsystem swerveSubsystem = new SwerveSubsystem();
+    private final SwerveSubsystem swerveSubsystem = new SwerveSubsystem(PathPlannerAuto.getStaringPoseFromAutoFile("New Auto"));
     private final PDPSubsystem m_pdp = new PDPSubsystem();
     private final XboxController xc = new XboxController(0);
+    private final XboxController xc2 = new XboxController(1);
     private SwerveControllerCommand controllerCommand;
-    //private final pneumaticSubsystem m_PneumaticSubsystem = new pneumaticSubsystem();
+    private final pneumaticSubsystem m_PneumaticSubsystem = new pneumaticSubsystem();
     
     PathPlannerAuto N = new PathPlannerAuto("New Auto");
     //PathfindThenFollowPathHolonomic findPath;
@@ -82,6 +85,7 @@ public class RobotContainer {
 
         configureButtonBindings();
         registerCommands();
+        
     
     //findPath = new PathfindThenFollowPathHolonomic(null, null, null, null, null, null, null, null);
         
@@ -92,6 +96,8 @@ public class RobotContainer {
 
     private void configureButtonBindings() {
         new JoystickButton(xc, Constants.buttonA).onTrue(new zeroHeading(swerveSubsystem));
+        new JoystickButton(xc2, Constants.buttonB).toggleOnTrue(new climberUP(m_PneumaticSubsystem));
+        new JoystickButton(xc2, Constants.buttonX).toggleOnTrue(new climbRetrack(m_PneumaticSubsystem));
     }
 
     public Command getAutonomousCommand() {

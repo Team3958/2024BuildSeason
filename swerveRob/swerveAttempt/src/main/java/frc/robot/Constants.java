@@ -29,7 +29,7 @@ public final class Constants {
   public static final double kPDriving = 0.1;
   public static final double ks = 0.145;
   public static final double kv = 0.55;
-public static final double WHEELRADIUS = 0.21;
+public static final double WHEELRADIUS = 0.0508;
 
 
 // define swerve
@@ -43,26 +43,26 @@ public static final boolean kFrontLeftDriveAbsoluteEncoderReversed = false;
 
 public static final int kFrontRightDriveMotorPort = 25;
 public static final int kFrontRightTurningMotorPort = 27;
-public static final boolean kFrontRightDriveEncoderReversed = true;
+public static final boolean kFrontRightDriveEncoderReversed = false;
 public static final boolean kFrontRightTurningEncoderReversed = false;
 public static final int kFrontRightDriveAbsoluteEncoderPort = 1;
-public static final double kFrontRightDriveAbsoluteEncoderOffsetRad = 4.15;
+public static final double kFrontRightDriveAbsoluteEncoderOffsetRad = 1.01;
 public static final boolean kFrontRightDriveAbsoluteEncoderReversed = false;
 
 public static final int kBackLeftDriveMotorPort = 20;
 public static final int kBackLeftTurningMotorPort = 23;
-public static final boolean kBackLeftDriveEncoderReversed = true;
+public static final boolean kBackLeftDriveEncoderReversed = false;
 public static final boolean kBackLeftTurningEncoderReversed = false;
 public static final int kBackLeftDriveAbsoluteEncoderPort = 3;
-public static final double kBackLeftDriveAbsoluteEncoderOffsetRad = 5.16;
+public static final double kBackLeftDriveAbsoluteEncoderOffsetRad = 2.02;
 public static final boolean kBackLeftDriveAbsoluteEncoderReversed = false;
 
 public static final int kBackRightDriveMotorPort = 24;
 public static final int kBackRightTurningMotorPort = 26;
-public static  final boolean kBackRightDriveEncoderReversed = true;
+public static  final boolean kBackRightDriveEncoderReversed = false;
 public static final boolean kBackRightTurningEncoderReversed = false;
 public static final int kBackRightDriveAbsoluteEncoderPort = 2;
-public static final double kBackRightDriveAbsoluteEncoderOffsetRad = 1.71+2.15;
+public static final double kBackRightDriveAbsoluteEncoderOffsetRad = 0.72;
 public static final boolean kBackRightDriveAbsoluteEncoderReversed = false;
 
 public static final double kWheelBase = 0.752475;
@@ -107,6 +107,8 @@ public static final double thetaP = 0;
 
 //xc
 public static final int buttonA = 1;
+public static final int buttonB = 2;
+public static final int buttonX = 3;
 
 //pneumatics
 public static final int PCM = 2;
@@ -118,6 +120,11 @@ public static final double kMaxFlywheelVoltage = 12;
 public static final double kMaxFlywheelCurrent = 30;
 public static final boolean top_flywheel_reversed = false;
 public static final boolean bottom_flywheel_reversed = false;
+public static final int intake = 0;
+public static final double KSshoot = 0;
+public static final double KVshooter = 0;
+public static final double KAshooter = 0;
+
 
 
 

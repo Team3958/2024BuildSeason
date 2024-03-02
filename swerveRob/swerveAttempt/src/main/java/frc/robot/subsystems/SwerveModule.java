@@ -13,6 +13,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -32,6 +33,7 @@ public class SwerveModule {
     private final SimpleMotorFeedforward driveFF = new SimpleMotorFeedforward(Constants.ks, Constants.kv);
     double driveVolts;
     double turnVolts;
+    double delta;
     
     
 
@@ -45,11 +47,11 @@ public class SwerveModule {
         TalonFXConfiguration turninConfiguration = new TalonFXConfiguration();
         driveConfiguration.Voltage.PeakForwardVoltage = 12;
         driveConfiguration.Voltage.PeakReverseVoltage = 12;
-        driveConfiguration.CurrentLimits.StatorCurrentLimit = 40;
+        driveConfiguration.CurrentLimits.StatorCurrentLimit = 8;
 
         turninConfiguration.Voltage.PeakForwardVoltage = 8;
         turninConfiguration.Voltage.PeakReverseVoltage = 8;
-        turninConfiguration.CurrentLimits.StatorCurrentLimit = 10;
+        turninConfiguration.CurrentLimits.StatorCurrentLimit = 3;
         driveMotor = new TalonFX(driveMotorId);
         turningMotor = new TalonFX(turningMotorId);
         driveMotor.getConfigurator().apply(driveConfiguration);
@@ -69,12 +71,12 @@ public class SwerveModule {
     }
 
     public double getTurningPosition() {
-        return turningMotor.getPosition().getValueAsDouble()*2*Math.PI;
+        return (turningMotor.getPosition().getValueAsDouble()*2*Math.PI*Constants.kdriveGearRation)%(2*Math.PI);
     }
 
     public double getDriveVelocity() {
 
-        return (driveMotor.getVelocity().getValueAsDouble()*2*Math.PI)*Constants.WHEELRADIUS*Constants.kdriveGearRation;
+        return ((driveMotor.getVelocity().getValueAsDouble()*2*Math.PI)*Constants.WHEELRADIUS*Constants.kdriveGearRation);
     }
 
     public double getTurningVelocity() {
@@ -113,12 +115,17 @@ public class SwerveModule {
     }
         //angle corrected (no more negatives)
         state = new SwerveModuleState(state.speedMetersPerSecond, new Rotation2d(-state.angle.getRadians()));
-        double delta = state.angle.getDegrees()-getTurningPosition();
-        /*if(Math.abs(delta) > 90){
+        delta = 0;
+        if (Math.abs(getAbsoluteEncoderRad())> Math.PI){
+            delta = (state.angle.getDegrees())%(Math.PI) - getAbsoluteEncoderRad()%Math.PI;
+        }else if (Math.abs(getAbsoluteEncoderRad())< Math.PI){
+            delta = (state.angle.getDegrees())%(Math.PI) -Math.PI+ (getAbsoluteEncoderRad()%Math.PI);
+        }
+        if(Math.abs(delta) > 90){
             state = new SwerveModuleState(-state.speedMetersPerSecond, new Rotation2d((state.angle.getRadians()+Math.PI)));
-        }*/
+        }
         driveVolts = driveFF.calculate(state.speedMetersPerSecond)+proDrive.calculate(getDriveVelocity(), state.speedMetersPerSecond);
-        turnVolts = proTurn.calculate(getAbsoluteEncoderRad(), state.angle.getRadians());
+        turnVolts = proTurn.calculate(getState().angle.getRadians(), state.angle.getRadians());
         driveMotor.setVoltage(driveVolts); 
         turningMotor.setVoltage(turnVolts);
         
@@ -133,13 +140,16 @@ public class SwerveModule {
         System.err.println("state m/s likely null");
     }
         //angle corrected (no more negatives)
-        state = new SwerveModuleState(state.speedMetersPerSecond, new Rotation2d(-state.angle.getRadians()-Math.PI));
-        double delta = state.angle.getDegrees()-getTurningPosition();
+        state = new SwerveModuleState(state.speedMetersPerSecond, new Rotation2d(-state.angle.getRadians()+Math.PI));
+        delta =0;
+        delta = state.angle.getDegrees()- Units.radiansToDegrees(getAbsoluteEncoderRad());
+
         /*if(Math.abs(delta) > 90){
-            state = new SwerveModuleState(-state.speedMetersPerSecond, new Rotation2d((state.angle.getRadians()+Math.PI)));
+            state = new SwerveModuleState(-state.speedMetersPerSecond, new Rotation2d(((state.angle.getRadians()+Math.PI))%Math.PI));
         }*/
+        
         driveVolts = driveFF.calculate(state.speedMetersPerSecond)+proDrive.calculate(getDriveVelocity(), state.speedMetersPerSecond);
-        turnVolts = proTurn.calculate(getAbsoluteEncoderRad(), state.angle.getRadians());
+        turnVolts = proTurn.calculate(getState().angle.getRadians(), state.angle.getRadians());
         driveMotor.setVoltage(driveVolts); 
         turningMotor.setVoltage(turnVolts);
         
