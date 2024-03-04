@@ -98,10 +98,10 @@ public class SwerveModule {
     }
     public SwerveModuleState getState() {
         //return new SwerveModuleState(getDriveVelocity(), new Rotation2d(getTurningPosition()));
-        return new SwerveModuleState(getDriveVelocity(), new Rotation2d(getAbsoluteEncoderRad()));
+        return new SwerveModuleState(getDriveVelocity(), new Rotation2d(getTurningPosition()));
     }
     public SwerveModulePosition getSwerveModulePosition(){
-        return new SwerveModulePosition(getDrivePosition(), new Rotation2d(getAbsoluteEncoderRad()));
+        return new SwerveModulePosition(getDrivePosition(), new Rotation2d(getTurningPosition()));
     }
 
     public void setDesiredState(SwerveModuleState state) {
@@ -115,12 +115,7 @@ public class SwerveModule {
     }
         //angle corrected (no more negatives)
         state = new SwerveModuleState(state.speedMetersPerSecond, new Rotation2d(-state.angle.getRadians()));
-        delta = 0;
-        if (Math.abs(getAbsoluteEncoderRad())> Math.PI){
-            delta = (state.angle.getDegrees())%(Math.PI) - getAbsoluteEncoderRad()%Math.PI;
-        }else if (Math.abs(getAbsoluteEncoderRad())< Math.PI){
-            delta = (state.angle.getDegrees())%(Math.PI) -Math.PI+ (getAbsoluteEncoderRad()%Math.PI);
-        }
+        delta = state.angle.getDegrees()-getState().angle.getDegrees();
         if(Math.abs(delta) > 90){
             state = new SwerveModuleState(-state.speedMetersPerSecond, new Rotation2d((state.angle.getRadians()+Math.PI)));
         }
@@ -130,7 +125,7 @@ public class SwerveModule {
         turningMotor.setVoltage(turnVolts);
         
     }
-     public void setAutoDesiredState(SwerveModuleState state) {
+    public void setAutoDesiredState(SwerveModuleState state) {
         try{if (Math.abs(state.speedMetersPerSecond) < 0.1) {
             stop();
             return;
@@ -141,21 +136,16 @@ public class SwerveModule {
     }
         //angle corrected (no more negatives)
         state = new SwerveModuleState(state.speedMetersPerSecond, new Rotation2d(-state.angle.getRadians()+Math.PI));
-        delta =0;
-        delta = state.angle.getDegrees()- Units.radiansToDegrees(getAbsoluteEncoderRad());
-
-        /*if(Math.abs(delta) > 90){
-            state = new SwerveModuleState(-state.speedMetersPerSecond, new Rotation2d(((state.angle.getRadians()+Math.PI))%Math.PI));
-        }*/
-        
+        delta = state.angle.getDegrees()-getState().angle.getDegrees();
+        if(Math.abs(delta) > 90){
+            state = new SwerveModuleState(-state.speedMetersPerSecond, new Rotation2d((state.angle.getRadians()+Math.PI)));
+        }
         driveVolts = driveFF.calculate(state.speedMetersPerSecond)+proDrive.calculate(getDriveVelocity(), state.speedMetersPerSecond);
         turnVolts = proTurn.calculate(getState().angle.getRadians(), state.angle.getRadians());
         driveMotor.setVoltage(driveVolts); 
         turningMotor.setVoltage(turnVolts);
         
     }
-
-
     public void stop() {
         driveMotor.set(0);
         turningMotor.set(0);

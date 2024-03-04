@@ -20,6 +20,7 @@ import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.struct.Rotation2dStruct;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.Odometry;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
@@ -85,11 +86,17 @@ public class SwerveSubsystem extends SubsystemBase {
         frontRight.getSwerveModulePosition(),
         backRight.getSwerveModulePosition()
      };
+     private final SwerveModuleState[] restStates = new SwerveModuleState[]{
+            new SwerveModuleState(0.2, new Rotation2d()),
+            new SwerveModuleState(0.2, new Rotation2d()),
+            new SwerveModuleState(0.2, new Rotation2d()),
+            new SwerveModuleState(0.2, new Rotation2d()),
+        };
     //private final SwerveDriveOdometry odometer = new SwerveDriveOdometry(Constants.kDriveKinematics, new Rotation2d(0), swerveModPose);
     private final SwerveDrivePoseEstimator poseEstimator ;
     StructArrayPublisher<SwerveModuleState> publisher = NetworkTableInstance.getDefault()
     .getStructArrayTopic("MyStates", SwerveModuleState.struct).publish();
-    private final Pose2d initPose;
+    private final Pose2d initPose = new Pose2d();
      
     
     public SwerveSubsystem(Pose2d initpose) {
@@ -101,15 +108,15 @@ public class SwerveSubsystem extends SubsystemBase {
             } catch (Exception e) {
             }
         }).start();
-        this.initPose = initpose;
+        //this.initPose = initpose;
         poseEstimator = new SwerveDrivePoseEstimator(Constants.kDriveKinematics, new Rotation2d(), swerveModPose, initpose);
         AutoBuilder.configureHolonomic(this::getPose, 
         this::resetOdometry, 
         this::getRelatChassisSpeeds, 
         this::setStatesFromChassisSpeeds, 
         new HolonomicPathFollowerConfig(
-            new PIDConstants(5,0,0),
-            new PIDConstants(5,0,0),
+            new PIDConstants(4,0,0),
+            new PIDConstants(3,0,0),
             2, 
             0.4,
             new ReplanningConfig(false,false)),
@@ -225,6 +232,13 @@ public class SwerveSubsystem extends SubsystemBase {
     }
     public void setStatesFromChassisSpeeds(ChassisSpeeds speeds){
         setAutoModuleStates(Constants.kDriveKinematics.toSwerveModuleStates(speeds));
+    }
+    public void reset_encoders(){
+        setModuleStates(restStates);
+        frontLeft.reset_encoders();
+        frontRight.reset_encoders();
+        backLeft.reset_encoders();
+        backRight.reset_encoders();
     }
     
 }

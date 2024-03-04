@@ -28,10 +28,10 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import frc.robot.commands.drivingCommand;
 import frc.robot.commands.zeroHeading;
 import frc.robot.commands.climber.climbRetrack;
 import frc.robot.commands.climber.climberUP;
+import frc.robot.commands.driving.drivingCommand;
 import frc.robot.subsystems.PDPSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.subsystems.pneumaticSubsystem;
@@ -57,7 +57,7 @@ public class RobotContainer {
 
     public RobotContainer() {
         swerveSubsystem.zeroHeading();
-        swerveSubsystem.resetOdometry(new Pose2d());
+        //swerveSubsystem.resetOdometry(new Pose2d());
 
         // known way to follow paths
         PIDController xController = new PIDController(Constants.xP, 0, 0);
@@ -101,9 +101,6 @@ public class RobotContainer {
     }
 
     public Command getAutonomousCommand() {
-        // 1. Create trajectory settings
-        //swerveSubsystem.zeroHeading();
-        //swerveSubsystem.resetOdometry(new Pose2d());
         return N;
     }
 }
