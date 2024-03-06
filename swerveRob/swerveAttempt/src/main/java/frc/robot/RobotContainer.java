@@ -40,7 +40,7 @@ import frc.robot.subsystems.shooter;
 
 public class RobotContainer {
 
-    private final SwerveSubsystem swerveSubsystem = new SwerveSubsystem();
+    //private final SwerveSubsystem swerveSubsystem = new SwerveSubsystem();
     private final PDPSubsystem m_pdp = new PDPSubsystem();
     private final XboxController xc = new XboxController(0);
     private final XboxController xc2 = new XboxController(1);
@@ -48,7 +48,7 @@ public class RobotContainer {
     private SwerveControllerCommand controllerCommand;
     //private final pneumaticSubsystem m_PneumaticSubsystem = new pneumaticSubsystem();
     
-    PathPlannerAuto N = new PathPlannerAuto("New Auto");
+    //PathPlannerAuto N = new PathPlannerAuto("New Auto");
     //PathfindThenFollowPathHolonomic findPath;
     Pose2d startPose;
 
@@ -60,7 +60,7 @@ public class RobotContainer {
     //private final SendableChooser<Command> autoChooser;
 
     public RobotContainer() {
-        swerveSubsystem.zeroHeading();
+        //swerveSubsystem.zeroHeading();
         
 
         // known way to follow paths
@@ -78,7 +78,7 @@ public class RobotContainer {
         
         
         // set swerve drive
-        swerveSubsystem.setDefaultCommand(
+        /*swerveSubsystem.setDefaultCommand(
         new drivingCommand(
             swerveSubsystem,
             () -> xc.getLeftY(),
@@ -86,7 +86,7 @@ public class RobotContainer {
             () -> xc.getRightX(),
             () -> !xc.getYButton()));
         
-
+        */
         configureButtonBindings();
         registerCommands();
         
@@ -99,7 +99,7 @@ public class RobotContainer {
     }
 
     private void configureButtonBindings() {
-        new JoystickButton(xc, Constants.buttonA).onTrue(new zeroHeading(swerveSubsystem));
+        //new JoystickButton(xc, Constants.buttonA).onTrue(new zeroHeading(swerveSubsystem));
         //new JoystickButton(xc2, Constants.buttonB).toggleOnTrue(new climberUP(m_PneumaticSubsystem));
         //new JoystickButton(xc2, Constants.buttonX).toggleOnTrue(new climbRetrack(m_PneumaticSubsystem));
         new JoystickButton(xc, Constants.buttonY).onTrue(new shootSpeaker(m_Shooter) );
