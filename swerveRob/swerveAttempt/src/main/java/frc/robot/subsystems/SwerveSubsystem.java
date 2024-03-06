@@ -96,10 +96,10 @@ public class SwerveSubsystem extends SubsystemBase {
     private final SwerveDrivePoseEstimator poseEstimator ;
     StructArrayPublisher<SwerveModuleState> publisher = NetworkTableInstance.getDefault()
     .getStructArrayTopic("MyStates", SwerveModuleState.struct).publish();
-    private final Pose2d initPose = new Pose2d();
+    private final Pose2d initPose = new Pose2d(new Translation2d(2/2,7/2), new Rotation2d());
      
     
-    public SwerveSubsystem(Pose2d initpose) {
+    public SwerveSubsystem() {
         //poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(0.5,0.5,20));
         new Thread(() -> {
             try {
@@ -109,15 +109,15 @@ public class SwerveSubsystem extends SubsystemBase {
             }
         }).start();
         //this.initPose = initpose;
-        poseEstimator = new SwerveDrivePoseEstimator(Constants.kDriveKinematics, new Rotation2d(), swerveModPose, initpose);
+        poseEstimator = new SwerveDrivePoseEstimator(Constants.kDriveKinematics, new Rotation2d(), swerveModPose, initPose);
         AutoBuilder.configureHolonomic(this::getPose, 
         this::resetOdometry, 
         this::getRelatChassisSpeeds, 
         this::setStatesFromChassisSpeeds, 
         new HolonomicPathFollowerConfig(
-            new PIDConstants(4,0,0),
             new PIDConstants(3,0,0),
-            2, 
+            new PIDConstants(3,0,0),
+            1, 
             0.4,
             new ReplanningConfig(false,false)),
         () ->{
@@ -203,10 +203,11 @@ public class SwerveSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("br velocity", backRight.getDriveVelocity());
         SmartDashboard.putNumber("translation x", getPose().getX());
         SmartDashboard.putNumber("translation y", getPose().getY());
+        
     }
 
     public void stopModules() {
-        //frontLeft.stop();
+        frontLeft.stop();
         frontRight.stop();
         backLeft.stop();
         backRight.stop();
@@ -234,7 +235,7 @@ public class SwerveSubsystem extends SubsystemBase {
         setAutoModuleStates(Constants.kDriveKinematics.toSwerveModuleStates(speeds));
     }
     public void reset_encoders(){
-        setModuleStates(restStates);
+        //setModuleStates(restStates);
         frontLeft.reset_encoders();
         frontRight.reset_encoders();
         backLeft.reset_encoders();

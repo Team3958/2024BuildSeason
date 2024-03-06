@@ -60,7 +60,7 @@ public class SwerveModule {
         driveMotor.setInverted(driveMotorReversed);
         turningMotor.setInverted(turningMotorReversed);
         turningMotor.setNeutralMode(NeutralModeValue.Coast);
-        driveMotor.setNeutralMode(NeutralModeValue.Brake);
+        driveMotor.setNeutralMode(NeutralModeValue.Coast);
         
         proTurn.enableContinuousInput(-Math.PI, Math.PI);
         reset_encoders();
@@ -76,7 +76,7 @@ public class SwerveModule {
 
     public double getDriveVelocity() {
 
-        return ((driveMotor.getVelocity().getValueAsDouble()*2*Math.PI)*Constants.WHEELRADIUS*Constants.kdriveGearRation);
+        return (Units.rotationsToRadians(driveMotor.getVelocity().getValueAsDouble())*Constants.WHEELRADIUS*Constants.kdriveGearRation);
     }
 
     public double getTurningVelocity() {
@@ -96,9 +96,10 @@ public class SwerveModule {
         driveMotor.setPosition(0);
         turningMotor.setPosition(getAbsoluteEncoderRad());
     }
+    
     public SwerveModuleState getState() {
         //return new SwerveModuleState(getDriveVelocity(), new Rotation2d(getTurningPosition()));
-        return new SwerveModuleState(getDriveVelocity(), new Rotation2d(getTurningPosition()));
+        return new SwerveModuleState(getDriveVelocity(), new Rotation2d(getAbsoluteEncoderRad()));
     }
     public SwerveModulePosition getSwerveModulePosition(){
         return new SwerveModulePosition(getDrivePosition(), new Rotation2d(getTurningPosition()));
