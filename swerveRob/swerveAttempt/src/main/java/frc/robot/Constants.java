@@ -109,6 +109,7 @@ public static final double thetaP = 0;
 public static final int buttonA = 1;
 public static final int buttonB = 2;
 public static final int buttonX = 3;
+public static final int buttonY = 4;
 
 //pneumatics
 public static final int PCM = 2;
@@ -116,15 +117,19 @@ public static final int PCM = 2;
 //shooter
 public static final int top_flywheel = 13;
 public static final int bottom_flywheel = 11;
+public static final double top_flywheel_ratio = 0.0723214288; // 13.8....
+public static final double bottom_flywheel_ratio = 0.05424107;// 18.43
 public static final double kMaxFlywheelVoltage = 12;
 public static final double kMaxFlywheelCurrent = 30;
 public static final boolean top_flywheel_reversed = false;
 public static final boolean bottom_flywheel_reversed = false;
 public static final int intake = 0;
-public static final double KSshoot = 0.3;
-public static final double KVshooter = 2;
+public static final double KSshootTop = 6;
+public static final double KVshooterTop = 6;
+public static final double KSshootBottom = 0.9;
+public static final double KVshooterBottom = 6;
 public static final double KAshooter = 0;
-public static final int buttonY = 4;
+
 
 
 

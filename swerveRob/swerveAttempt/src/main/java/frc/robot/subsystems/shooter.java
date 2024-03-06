@@ -23,9 +23,10 @@ public class shooter extends SubsystemBase {
   private final TalonFX topFlyWheel = new TalonFX(Constants.top_flywheel);
   private final TalonFX bottomFlyWheel = new TalonFX(Constants.bottom_flywheel);
   private TalonFXConfiguration config = new TalonFXConfiguration();
-  private final SimpleMotorFeedforward shooterff = new SimpleMotorFeedforward(Constants.KSshoot, Constants.KVshooter, Constants.KAshooter);
-  private final BangBangController controller1 = new BangBangController();
-  private final BangBangController controller2 = new BangBangController();
+  private final SimpleMotorFeedforward shooterffTop = new SimpleMotorFeedforward(Constants.KSshootTop, Constants.KVshooterTop, Constants.KAshooter);
+  private final SimpleMotorFeedforward shooterffBottom = new SimpleMotorFeedforward(Constants.KSshootBottom, Constants.KVshooterBottom, Constants.KAshooter);
+  //private final BangBangController controller1 = new BangBangController();
+  //\private final BangBangController controller2 = new BangBangController();
 
   public shooter() {
     config.Voltage.PeakForwardVoltage= Constants.kMaxFlywheelVoltage;
@@ -51,9 +52,18 @@ public class shooter extends SubsystemBase {
     feeder.set(0.2*direction);
   }
   public void shoot(){
-    double velocity= 0;
-    topFlyWheel.setVoltage(shooterff.calculate(velocity)+controller1.calculate(topFlyWheel.getVelocity().getValueAsDouble()));
-    bottomFlyWheel.setVoltage(shooterff.calculate(velocity)+controller2.calculate(bottomFlyWheel.getVelocity().getValueAsDouble()));
+    double velocity= 5;
+    topFlyWheel.setVoltage(shooterffTop.calculate(velocity));//+controller1.calculate(getTopVelocity());
+    bottomFlyWheel.setVoltage(shooterffBottom.calculate(velocity));//+controller2.calculate(getBottomVelocity()));
+  }
+
+  public double getTopVelocity(){
+    return Units.rotationsToRadians(topFlyWheel.getVelocity().getValueAsDouble())*Constants.WHEELRADIUS
+    *Constants.top_flywheel_ratio;
+  }
+  public double getBottomVelocity(){
+    return Units.rotationsToRadians(bottomFlyWheel.getVelocity().getValueAsDouble())*Constants.WHEELRADIUS
+    *Constants.bottom_flywheel_ratio;
   }
   public void zero(){
     topFlyWheel.set(0);
