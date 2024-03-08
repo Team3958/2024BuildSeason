@@ -50,12 +50,6 @@ public class drivingCommand extends Command {
        
         ySpeed = ySpdFunction.get();
         turningSpeed = turningSpdFunction.get();
-        if(turningSpeed>= 0){
-            Constants.isTurningCCW = false;
-        }
-        else if (turningSpeed <0){
-            Constants.isTurningCCW = true;
-        }
 
         SmartDashboard.putNumber("xbox x", xSpeed);
         SmartDashboard.putNumber("xbox y", ySpeed);

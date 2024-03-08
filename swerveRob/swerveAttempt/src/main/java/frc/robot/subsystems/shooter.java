@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems;
 
+import javax.swing.text.StyleContext.SmallAttributeSet;
+
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
@@ -14,6 +16,7 @@ import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.motorcontrol.Spark;
 import edu.wpi.first.wpilibj.motorcontrol.Talon;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
@@ -46,13 +49,15 @@ public class shooter extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    SmartDashboard.putNumber("top flywheel vel", getTopVelocity());
+    SmartDashboard.putNumber("bottom flywheel vel", getBottomVelocity());
   }
   public void feedIntoShooter(boolean flag){
     double direction = (flag)? 1:-1;
     feeder.set(0.2*direction);
   }
   public void shoot(){
-    double velocity= 5;
+    double velocity= 2;
     topFlyWheel.setVoltage(shooterffTop.calculate(velocity));//+controller1.calculate(getTopVelocity());
     bottomFlyWheel.setVoltage(shooterffBottom.calculate(velocity));//+controller2.calculate(getBottomVelocity()));
   }
@@ -70,8 +75,8 @@ public class shooter extends SubsystemBase {
     bottomFlyWheel.set(0);
   }
   public void shootAmp(){
-    topFlyWheel.set(0.08);
-    bottomFlyWheel.set(0.1);
+    topFlyWheel.set(0.8*Constants.intake_power);
+    bottomFlyWheel.set(1*Constants.intake_power);
   }
   public void zeroFeeder(){
     feeder.set(0);

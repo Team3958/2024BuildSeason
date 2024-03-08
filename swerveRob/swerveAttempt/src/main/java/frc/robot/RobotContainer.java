@@ -32,6 +32,9 @@ import frc.robot.commands.zeroHeading;
 import frc.robot.commands.climber.climbRetrack;
 import frc.robot.commands.climber.climberUP;
 import frc.robot.commands.driving.drivingCommand;
+import frc.robot.commands.driving.resetEncodersCommnad;
+import frc.robot.commands.shooter.Intake;
+import frc.robot.commands.shooter.extake;
 import frc.robot.commands.shooter.shootSpeaker;
 import frc.robot.subsystems.PDPSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
@@ -40,29 +43,21 @@ import frc.robot.subsystems.shooter;
 
 public class RobotContainer {
 
-    //private final SwerveSubsystem swerveSubsystem = new SwerveSubsystem();
+    private final SwerveSubsystem swerveSubsystem = new SwerveSubsystem();
     private final PDPSubsystem m_pdp = new PDPSubsystem();
     private final XboxController xc = new XboxController(0);
-    private final XboxController xc2 = new XboxController(1);
-    //private final shooter m_Shooter = new shooter();
+   // private final XboxController xc2 = new XboxController(1);
+    private final shooter m_Shooter = new shooter();
     //private SwerveControllerCommand controllerCommand;
-    private final pneumaticSubsystem m_PneumaticSubsystem = new pneumaticSubsystem();
+    //private final pneumaticSubsystem m_PneumaticSubsystem = new pneumaticSubsystem();
     
-    //PathPlannerAuto N = new PathPlannerAuto("New Auto");
+    PathPlannerAuto N = new PathPlannerAuto("New Auto");
     //PathfindThenFollowPathHolonomic findPath;
     Pose2d startPose;
 
-    
-  // Trajectory chosenTrajectory;
-
-  
-    
     //private final SendableChooser<Command> autoChooser;
 
     public RobotContainer() {
-        //swerveSubsystem.zeroHeading();
-        
-
         // known way to follow paths
         /*PIDController xController = new PIDController(Constants.xP, 0, 0);
         PIDController yController = new PIDController(Constants.yP, 0, 0);
@@ -78,7 +73,7 @@ public class RobotContainer {
         
         
         // set swerve drive
-        /*swerveSubsystem.setDefaultCommand(
+        swerveSubsystem.setDefaultCommand(
         new drivingCommand(
             swerveSubsystem,
             () -> xc.getLeftY(),
@@ -86,7 +81,7 @@ public class RobotContainer {
             () -> xc.getRightX(),
             () -> !xc.getYButton()));
         
-        */
+        
         configureButtonBindings();
         registerCommands();
         
@@ -99,10 +94,13 @@ public class RobotContainer {
     }
 
     private void configureButtonBindings() {
-        //new JoystickButton(xc, Constants.buttonA).onTrue(new zeroHeading(swerveSubsystem));
+        new JoystickButton(xc, Constants.buttonA).onTrue(new zeroHeading(swerveSubsystem));
         //new JoystickButton(xc2, Constants.buttonB).toggleOnTrue(new climberUP(m_PneumaticSubsystem));
         //new JoystickButton(xc2, Constants.buttonX).toggleOnTrue(new climbRetrack(m_PneumaticSubsystem));
-       // new JoystickButton(xc, Constants.buttonY).onTrue(new shootSpeaker(m_Shooter) );
+        new JoystickButton(xc, Constants.buttonY).toggleOnTrue(new shootSpeaker(m_Shooter) );
+        new JoystickButton(xc, Constants.buttonLB).whileTrue(new Intake(m_Shooter));
+        new JoystickButton(xc, Constants.buttonRB).whileTrue(new extake(m_Shooter));
+        new JoystickButton(xc, Constants.buttonStart).whileTrue(new resetEncodersCommnad(swerveSubsystem));
     }
 
     public Command getAutonomousCommand() {
