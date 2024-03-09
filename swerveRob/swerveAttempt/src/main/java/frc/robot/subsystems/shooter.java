@@ -22,7 +22,7 @@ import frc.robot.Constants;
 
 public class shooter extends SubsystemBase {
   /** Creates a new shooter. */
-  private final TalonFX feeder = new TalonFX(Constants.intake);
+  
   private final TalonFX topFlyWheel = new TalonFX(Constants.top_flywheel);
   private final TalonFX bottomFlyWheel = new TalonFX(Constants.bottom_flywheel);
   private TalonFXConfiguration config = new TalonFXConfiguration();
@@ -37,8 +37,7 @@ public class shooter extends SubsystemBase {
     config.CurrentLimits.SupplyCurrentLimit = Constants.kMaxFlywheelCurrent;
     motor__init__(topFlyWheel, Constants.top_flywheel_reversed);
     motor__init__(bottomFlyWheel, Constants.bottom_flywheel_reversed);
-    feeder.setNeutralMode(NeutralModeValue.Brake);
-    feeder.setInverted(false);
+    
     
   }
   private void motor__init__(TalonFX mot, boolean inverse){
@@ -52,10 +51,7 @@ public class shooter extends SubsystemBase {
     SmartDashboard.putNumber("top flywheel vel", getTopVelocity());
     SmartDashboard.putNumber("bottom flywheel vel", getBottomVelocity());
   }
-  public void feedIntoShooter(boolean flag){
-    double direction = (flag)? 1:-1;
-    feeder.set(0.2*direction);
-  }
+ 
   public void shoot(){
     double velocity= 2;
     topFlyWheel.setVoltage(shooterffTop.calculate(velocity));//+controller1.calculate(getTopVelocity());
@@ -78,7 +74,5 @@ public class shooter extends SubsystemBase {
     topFlyWheel.set(0.8*Constants.intake_power);
     bottomFlyWheel.set(1*Constants.intake_power);
   }
-  public void zeroFeeder(){
-    feeder.set(0);
-  }
+  
 }

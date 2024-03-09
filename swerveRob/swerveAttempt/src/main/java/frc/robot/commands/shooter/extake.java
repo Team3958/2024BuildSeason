@@ -5,15 +5,18 @@
 package frc.robot.commands.shooter;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.subsystems.intakeSub;
 import frc.robot.subsystems.shooter;
 
 public class extake extends Command {
   /** Creates a new extake. */
-  private final shooter shooter;
-  public extake(shooter shooter) {
+  
+  private final intakeSub in;
+  public extake( intakeSub in) {
     // Use addRequirements() here to declare subsystem dependencies.
-    this.shooter = shooter;
-    addRequirements(shooter);
+    
+    this.in = in;
+    addRequirements(in);
   }
 
   // Called when the command is initially scheduled.
@@ -23,13 +26,13 @@ public class extake extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    shooter.feedIntoShooter(false);
+    in.runIntake(true);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    shooter.zeroFeeder();
+    in.zero();
   }
 
   // Returns true when the command should end.

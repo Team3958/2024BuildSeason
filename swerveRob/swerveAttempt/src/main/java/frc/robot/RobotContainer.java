@@ -26,6 +26,8 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.zeroHeading;
@@ -35,9 +37,11 @@ import frc.robot.commands.driving.drivingCommand;
 import frc.robot.commands.driving.resetEncodersCommnad;
 import frc.robot.commands.shooter.Intake;
 import frc.robot.commands.shooter.extake;
+import frc.robot.commands.shooter.fullshootercommand;
 import frc.robot.commands.shooter.shootSpeaker;
 import frc.robot.subsystems.PDPSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
+import frc.robot.subsystems.intakeSub;
 import frc.robot.subsystems.pneumaticSubsystem;
 import frc.robot.subsystems.shooter;
 
@@ -46,12 +50,14 @@ public class RobotContainer {
     private final SwerveSubsystem swerveSubsystem = new SwerveSubsystem();
     private final PDPSubsystem m_pdp = new PDPSubsystem();
     private final XboxController xc = new XboxController(0);
+    private final intakeSub m_intake = new intakeSub();
    // private final XboxController xc2 = new XboxController(1);
     private final shooter m_Shooter = new shooter();
     //private SwerveControllerCommand controllerCommand;
-    //private final pneumaticSubsystem m_PneumaticSubsystem = new pneumaticSubsystem();
+     //private final pneumaticSubsystem m_PneumaticSubsystem = new pneumaticSubsystem();
     
-    PathPlannerAuto N = new PathPlannerAuto("New Auto");
+   // private SequentialCommandGroup main = new SequentialCommandGroup(new shootSpeaker(m_Shooter), fullShoot);
+    //PathPlannerAuto N = new PathPlannerAuto("New Auto");
     //PathfindThenFollowPathHolonomic findPath;
     Pose2d startPose;
 
@@ -73,6 +79,8 @@ public class RobotContainer {
         
         
         // set swerve drive
+        
+        
         swerveSubsystem.setDefaultCommand(
         new drivingCommand(
             swerveSubsystem,
@@ -91,20 +99,22 @@ public class RobotContainer {
     }
     private void registerCommands(){
        // NamedCommands.registerCommand("zero", new zeroHeading(swerveSubsystem));
+       //NamedCommands.registerCommand("shoot", main);
     }
 
     private void configureButtonBindings() {
         new JoystickButton(xc, Constants.buttonA).onTrue(new zeroHeading(swerveSubsystem));
         //new JoystickButton(xc2, Constants.buttonB).toggleOnTrue(new climberUP(m_PneumaticSubsystem));
         //new JoystickButton(xc2, Constants.buttonX).toggleOnTrue(new climbRetrack(m_PneumaticSubsystem));
-        new JoystickButton(xc, Constants.buttonY).toggleOnTrue(new shootSpeaker(m_Shooter) );
-        new JoystickButton(xc, Constants.buttonLB).whileTrue(new Intake(m_Shooter));
-        new JoystickButton(xc, Constants.buttonRB).whileTrue(new extake(m_Shooter));
+        new JoystickButton(xc, Constants.buttonY).whileTrue(new fullshootercommand(m_Shooter, m_intake));
+        new JoystickButton(xc, Constants.buttonLB).whileTrue(new Intake(m_intake));
+        new JoystickButton(xc, Constants.buttonRB).whileTrue(new extake(m_intake));
         new JoystickButton(xc, Constants.buttonStart).whileTrue(new resetEncodersCommnad(swerveSubsystem));
     }
 
     public Command getAutonomousCommand() {
         //return new shootSpeaker(m_Shooter);
+        swerveSubsystem.zeroHeading();
         return null;
     }
 }
