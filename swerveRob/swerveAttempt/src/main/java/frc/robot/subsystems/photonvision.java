@@ -4,33 +4,48 @@
 
 package frc.robot.subsystems;
 
+import java.util.Optional;
+
 import org.opencv.core.Mat;
 import org.opencv.core.Point;
 import org.opencv.core.Rect;
 import org.opencv.core.Scalar;
 import org.opencv.imgproc.Imgproc;
+import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
+import org.photonvision.PhotonPoseEstimator;
+import org.photonvision.PhotonPoseEstimator.PoseStrategy;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
+import edu.wpi.first.apriltag.AprilTagFieldLayout;
+import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.cscore.CvSink;
 import edu.wpi.first.cscore.CvSource;
 import edu.wpi.first.cscore.UsbCamera;
 import edu.wpi.first.hal.FRCNetComm.tResourceType;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.net.PortForwarder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 
 public class photonvision extends SubsystemBase {
   /** Creates a new photonvision. */
   double pitch;
   Transform3d pose;
+  AprilTagFieldLayout aprilTagFieldLayout = AprilTagFields.k2024Crescendo.loadAprilTagLayoutField();
+  
   public photonvision() {
+    PortForwarder.add(5800, "photonvision.local", 5800);
+    
     Thread m_visonThread = new Thread(
     () ->{
     UsbCamera cam = CameraServer.startAutomaticCapture();
+    
     cam.setResolution(320, 240);
     CvSource outputstream = CameraServer.putVideo("Rectangle", 320, 240);
     CvSink cvSink = CameraServer.getVideo();
@@ -48,7 +63,7 @@ public class photonvision extends SubsystemBase {
   m_visonThread.start();
   }
   PhotonCamera camera = new PhotonCamera("photonvision");
-  Transform3d robotToCam = new Transform3d(new Translation3d(0.5,0,0.5), new Rotation3d(0,0,0));
+  PhotonPoseEstimator photonPoseEstimator = new PhotonPoseEstimator(aprilTagFieldLayout, PoseStrategy.CLOSEST_TO_REFERENCE_POSE, camera,Constants.kCameraToRobot);
 
   @Override
   public void periodic() {
@@ -60,6 +75,10 @@ public class photonvision extends SubsystemBase {
     updateShuffleBoard();
   
   }
+   public Optional<EstimatedRobotPose> getEstimatedGlobalPose(Pose2d prevEstimatedRobotPose) {
+        photonPoseEstimator.setReferencePose(prevEstimatedRobotPose);
+        return photonPoseEstimator.update();
+    }
   private void updateShuffleBoard(){
     SmartDashboard.putNumber("pitch", pitch);
     SmartDashboard.putNumber("pose x", pose.getX());

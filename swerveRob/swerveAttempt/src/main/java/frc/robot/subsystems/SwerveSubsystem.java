@@ -3,6 +3,7 @@ package frc.robot.subsystems;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.littletonrobotics.junction.Logger;
 //import org.littletonrobotics.junction.Logger;
 import org.photonvision.PhotonCamera;
 
@@ -86,16 +87,11 @@ public class SwerveSubsystem extends SubsystemBase {
         frontRight.getSwerveModulePosition(),
         backRight.getSwerveModulePosition()
      };
-     private final SwerveModuleState[] restStates = new SwerveModuleState[]{
-            new SwerveModuleState(0.2, new Rotation2d()),
-            new SwerveModuleState(0.2, new Rotation2d()),
-            new SwerveModuleState(0.2, new Rotation2d()),
-            new SwerveModuleState(0.2, new Rotation2d()),
-        };
+     
     //private final SwerveDriveOdometry odometer = new SwerveDriveOdometry(Constants.kDriveKinematics, new Rotation2d(0), swerveModPose);
     private final SwerveDrivePoseEstimator poseEstimator ;
-    StructArrayPublisher<SwerveModuleState> publisher = NetworkTableInstance.getDefault()
-    .getStructArrayTopic("MyStates", SwerveModuleState.struct).publish();
+    /*StructArrayPublisher<SwerveModuleState> publisher = NetworkTableInstance.getDefault()
+    .getStructArrayTopic("MyStates", SwerveModuleState.struct).publish();*/
     private final Pose2d initPose = new Pose2d(new Translation2d(2/2,7/2), new Rotation2d());
      
     
@@ -177,8 +173,8 @@ public class SwerveSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
         updateSwerveModPose();
-        //Logger.recordOutput("MyPose", getPose());
-        /*var res = cam.getLatestResult();
+        /*PhotonCamera cam = new PhotonCamera(getName());
+        var res = cam.getLatestResult();
         if (res.hasTargets()) {
             var imageCaptureTime = res.getTimestampSeconds();
             var camToTargetTrans = res.getBestTarget().getBestCameraToTarget();
@@ -189,7 +185,11 @@ public class SwerveSubsystem extends SubsystemBase {
         
         updateShuffleBoard();
         poseEstimator.update(getRotation2d(), swerveModPose);
-        publisher.set(getStates());
+        Logger.recordOutput("MyStates", getStates());
+        //publisher.set(getStates());
+
+        // odometry 
+        Logger.recordOutput("MyPose", getPose());
     }
     private void updateShuffleBoard(){
         SmartDashboard.putNumber("fl encoder angle", frontLeft.getAbsoluteEncoderRad());
@@ -215,8 +215,6 @@ public class SwerveSubsystem extends SubsystemBase {
     
     public void setModuleStates(SwerveModuleState[] desiredStates) {
         SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates, Constants.kPhysicalMaxSpeedMetersPerSecond);
-    
-        //Logger.recordOutput("MyStates", desiredStates);
         frontLeft.setDesiredState(desiredStates[0]);
         frontRight.setDesiredState(desiredStates[1]);
         backLeft.setDesiredState(desiredStates[2]);
@@ -224,8 +222,6 @@ public class SwerveSubsystem extends SubsystemBase {
     }
     public void setAutoModuleStates(SwerveModuleState[] desiredStates) {
         SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates, Constants.kPhysicalMaxSpeedMetersPerSecond);
-    
-        //Logger.recordOutput("MyStates", desiredStates);
         frontLeft.setAutoDesiredState(desiredStates[0]);
         frontRight.setAutoDesiredState(desiredStates[1]);
         backLeft.setAutoDesiredState(desiredStates[2]);
@@ -243,11 +239,3 @@ public class SwerveSubsystem extends SubsystemBase {
     }
     
 }
-
-// might need to make new odometry 
-/*
- * use x cos u and y sin u and subtract rotional values from gyro
- * 
- * or just gyro could work. orentaition might just have been wrong before.
- * flip roborio*****
- */

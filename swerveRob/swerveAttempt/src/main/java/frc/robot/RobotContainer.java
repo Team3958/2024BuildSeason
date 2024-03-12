@@ -37,7 +37,10 @@ import frc.robot.commands.driving.drivingCommand;
 import frc.robot.commands.driving.resetEncodersCommnad;
 import frc.robot.commands.shooter.Intake;
 import frc.robot.commands.shooter.extake;
+import frc.robot.commands.shooter.feedshooterTimed;
 import frc.robot.commands.shooter.fullshootercommand;
+import frc.robot.commands.shooter.rampUpShooter;
+import frc.robot.commands.shooter.shootAmp;
 import frc.robot.commands.shooter.shootSpeaker;
 import frc.robot.subsystems.PDPSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
@@ -53,13 +56,13 @@ public class RobotContainer {
     private final intakeSub m_intake = new intakeSub();
    // private final XboxController xc2 = new XboxController(1);
     private final shooter m_Shooter = new shooter();
+    private final SequentialCommandGroup shoots = new SequentialCommandGroup(new rampUpShooter(m_Shooter), new feedshooterTimed(m_Shooter, m_intake));
     //private SwerveControllerCommand controllerCommand;
      //private final pneumaticSubsystem m_PneumaticSubsystem = new pneumaticSubsystem();
     
-   // private SequentialCommandGroup main = new SequentialCommandGroup(new shootSpeaker(m_Shooter), fullShoot);
-    //PathPlannerAuto N = new PathPlannerAuto("New Auto");
+    PathPlannerAuto N = new PathPlannerAuto("1m auto");
     //PathfindThenFollowPathHolonomic findPath;
-    Pose2d startPose;
+    Pose2d startPose = PathPlannerAuto.getStaringPoseFromAutoFile("1m auto");
 
     //private final SendableChooser<Command> autoChooser;
 
@@ -85,9 +88,9 @@ public class RobotContainer {
         new drivingCommand(
             swerveSubsystem,
             () -> xc.getLeftY(),
-            () -> xc.getLeftX(),
-            () -> xc.getRightX(),
-            () -> !xc.getYButton()));
+            () -> -xc.getLeftX(),
+            () -> -xc.getRightX(),
+            () -> !xc.getStartButtonPressed()));
         
         
         configureButtonBindings();
@@ -98,23 +101,24 @@ public class RobotContainer {
         
     }
     private void registerCommands(){
-       // NamedCommands.registerCommand("zero", new zeroHeading(swerveSubsystem));
-       //NamedCommands.registerCommand("shoot", main);
+       NamedCommands.registerCommand("zero", new zeroHeading(swerveSubsystem));
+       NamedCommands.registerCommand("shoot", shoots);
     }
 
     private void configureButtonBindings() {
-        new JoystickButton(xc, Constants.buttonA).onTrue(new zeroHeading(swerveSubsystem));
+        new JoystickButton(xc, Constants.buttonA).whileTrue(new zeroHeading(swerveSubsystem));
         //new JoystickButton(xc2, Constants.buttonB).toggleOnTrue(new climberUP(m_PneumaticSubsystem));
         //new JoystickButton(xc2, Constants.buttonX).toggleOnTrue(new climbRetrack(m_PneumaticSubsystem));
-        new JoystickButton(xc, Constants.buttonY).whileTrue(new fullshootercommand(m_Shooter, m_intake));
+        new JoystickButton(xc, Constants.buttonY).whileTrue(new shootSpeaker(m_Shooter));
         new JoystickButton(xc, Constants.buttonLB).whileTrue(new Intake(m_intake));
         new JoystickButton(xc, Constants.buttonRB).whileTrue(new extake(m_intake));
         new JoystickButton(xc, Constants.buttonStart).whileTrue(new resetEncodersCommnad(swerveSubsystem));
+        new JoystickButton(xc, Constants.buttonX).whileTrue(new shootAmp(m_Shooter));
     }
 
     public Command getAutonomousCommand() {
         //return new shootSpeaker(m_Shooter);
-        swerveSubsystem.zeroHeading();
-        return null;
+        //swerveSubsystem.zeroHeading();
+        return shoots;
     }
 }

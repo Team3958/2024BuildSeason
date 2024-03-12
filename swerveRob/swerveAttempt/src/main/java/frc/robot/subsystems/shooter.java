@@ -34,7 +34,8 @@ public class shooter extends SubsystemBase {
   public shooter() {
     config.Voltage.PeakForwardVoltage= Constants.kMaxFlywheelVoltage;
     config.Voltage.PeakReverseVoltage= Constants.kMaxFlywheelVoltage;
-    config.CurrentLimits.SupplyCurrentLimit = Constants.kMaxFlywheelCurrent;
+    config.CurrentLimits.StatorCurrentLimit = Constants.kMaxFlywheelCurrent;
+    config.CurrentLimits.StatorCurrentLimitEnable = true;
     motor__init__(topFlyWheel, Constants.top_flywheel_reversed);
     motor__init__(bottomFlyWheel, Constants.bottom_flywheel_reversed);
     
@@ -60,19 +61,20 @@ public class shooter extends SubsystemBase {
 
   public double getTopVelocity(){
     return Units.rotationsToRadians(topFlyWheel.getVelocity().getValueAsDouble())*Constants.WHEELRADIUS
-    *Constants.top_flywheel_ratio;
+    /Constants.top_flywheel_ratio;
   }
   public double getBottomVelocity(){
     return Units.rotationsToRadians(bottomFlyWheel.getVelocity().getValueAsDouble())*Constants.WHEELRADIUS
-    *Constants.bottom_flywheel_ratio;
+    /Constants.bottom_flywheel_ratio;
   }
   public void zero(){
     topFlyWheel.set(0);
     bottomFlyWheel.set(0);
   }
   public void shootAmp(){
-    topFlyWheel.set(0.8*Constants.intake_power);
-    bottomFlyWheel.set(1*Constants.intake_power);
+    double ampvelocity= 0.2;
+    topFlyWheel.setVoltage(shooterffTop.calculate(ampvelocity));//+controller1.calculate(getTopVelocity());
+    bottomFlyWheel.setVoltage(shooterffBottom.calculate(ampvelocity*0.5));//+controller2.calculate(getBottomVelocity()));
   }
   
 }

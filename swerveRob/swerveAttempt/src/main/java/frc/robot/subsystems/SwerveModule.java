@@ -47,11 +47,17 @@ public class SwerveModule {
         TalonFXConfiguration turninConfiguration = new TalonFXConfiguration();
         driveConfiguration.Voltage.PeakForwardVoltage = 12;
         driveConfiguration.Voltage.PeakReverseVoltage = 12;
-        driveConfiguration.CurrentLimits.StatorCurrentLimit = 8;
+        driveConfiguration.CurrentLimits.StatorCurrentLimit = 9;
+        driveConfiguration.CurrentLimits.SupplyCurrentLimit = 8;
+        driveConfiguration.CurrentLimits.StatorCurrentLimitEnable = true;
+        driveConfiguration.CurrentLimits.SupplyCurrentLimitEnable = true;
 
         turninConfiguration.Voltage.PeakForwardVoltage = 8;
         turninConfiguration.Voltage.PeakReverseVoltage = 8;
-        turninConfiguration.CurrentLimits.StatorCurrentLimit = 3;
+        turninConfiguration.CurrentLimits.StatorCurrentLimit = 5;
+        turninConfiguration.CurrentLimits.SupplyCurrentLimit = 6;
+        turninConfiguration.CurrentLimits.StatorCurrentLimitEnable = true;
+        turninConfiguration.CurrentLimits.SupplyCurrentLimitEnable = true;
         driveMotor = new TalonFX(driveMotorId);
         turningMotor = new TalonFX(turningMotorId);
         driveMotor.getConfigurator().apply(driveConfiguration);
