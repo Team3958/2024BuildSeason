@@ -64,7 +64,7 @@ public class photonvision extends SubsystemBase {
   m_visonThread.start();
   }
   PhotonCamera camera = new PhotonCamera("photonvision");
-  PhotonPoseEstimator photonPoseEstimator = new PhotonPoseEstimator(aprilTagFieldLayout, PoseStrategy.CLOSEST_TO_REFERENCE_POSE, camera,Constants.kCameraToRobot);
+  //PhotonPoseEstimator photonPoseEstimator = new PhotonPoseEstimator(aprilTagFieldLayout, PoseStrategy.CLOSEST_TO_REFERENCE_POSE, camera,Constants.kCameraToRobot);
 
   @Override
   public void periodic() {
@@ -77,10 +77,10 @@ public class photonvision extends SubsystemBase {
     updateShuffleBoard();
   
   }
-   public Optional<EstimatedRobotPose> getEstimatedGlobalPose(Pose2d prevEstimatedRobotPose) {
+  /* public Optional<EstimatedRobotPose> getEstimatedGlobalPose(Pose2d prevEstimatedRobotPose) {
         photonPoseEstimator.setReferencePose(prevEstimatedRobotPose);
         return photonPoseEstimator.update();
-    }
+    }*/
   private void updateShuffleBoard(){
     SmartDashboard.putNumber("pitch", pitch);
     SmartDashboard.putNumber("pose x", pose.getX());

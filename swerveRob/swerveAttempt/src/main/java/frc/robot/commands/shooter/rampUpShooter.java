@@ -17,7 +17,7 @@ public class rampUpShooter extends ParallelDeadlineGroup {
   public rampUpShooter(shooter sho) {
     // Add the deadline command in the super() call. Add other commands using
     // addCommands().
-    super(new timer(5000));
+    super(new timer(3000));
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(new shootSpeaker(sho));
   }

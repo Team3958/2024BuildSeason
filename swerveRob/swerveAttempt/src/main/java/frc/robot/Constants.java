@@ -53,7 +53,7 @@ public static final int kBackLeftDriveMotorPort = 20;
 public static final int kBackLeftTurningMotorPort = 23;
 public static final boolean kBackLeftDriveEncoderReversed = true;
 public static final boolean kBackLeftTurningEncoderReversed = false;
-public static final int kBackLeftDriveAbsoluteEncoderPort = 3;
+public static final int kBackLeftDriveAbsoluteEncoderPort = 2;
 public static final double kBackLeftDriveAbsoluteEncoderOffsetRad = 2.02;
 public static final boolean kBackLeftDriveAbsoluteEncoderReversed = false;
 
@@ -61,7 +61,7 @@ public static final int kBackRightDriveMotorPort = 24;
 public static final int kBackRightTurningMotorPort = 26;
 public static  final boolean kBackRightDriveEncoderReversed = true;
 public static final boolean kBackRightTurningEncoderReversed = false;
-public static final int kBackRightDriveAbsoluteEncoderPort = 2;
+public static final int kBackRightDriveAbsoluteEncoderPort = 3;
 public static final double kBackRightDriveAbsoluteEncoderOffsetRad = 0.72;
 public static final boolean kBackRightDriveAbsoluteEncoderReversed = false;
 
@@ -87,8 +87,8 @@ public static final double kPYController = 0.05;
 public static final double kTeleDriveMaxAccelerationUnitsPerSecond = 2.5;
 public static final double kTeleDriveMaxAngularAccelerationUnitsPerSecond = 8;
 public static final double kDeadband = 0.15;
-public static final double kTeleDriveMaxSpeedMetersPerSecond = 3;
-public static final double kTeleDriveMaxAngularSpeedRadiansPerSecond = 4;
+public static  double kTeleDriveMaxSpeedMetersPerSecond = 3;
+public static  double kTeleDriveMaxAngularSpeedRadiansPerSecond = 4;
 public static final double kdriveGearRation = 0.1481481481;//0.1481481481 = 6.75:1
 public static final String kCamName = null;
 
@@ -120,19 +120,19 @@ public static final int PCM = 2;
 //shooter
 public static final int top_flywheel = 13;
 public static final int bottom_flywheel = 21;
-public static final double top_flywheel_ratio = 3.125; 
+public static final double top_flywheel_ratio = 2.4; 
 public static final double bottom_flywheel_ratio = 8.296296;
 public static final double kMaxFlywheelVoltage = 12.3;
-public static final double kMaxFlywheelCurrent = 45;
+public static final double kMaxFlywheelCurrent = 40;
 public static final boolean top_flywheel_reversed = false;
 public static final boolean bottom_flywheel_reversed = false;
 public static final int intake = 5;
-public static final double KSshootTop = 3;
+public static final double KSshootTop = 4.5;
 public static final double KSshootBottom = 1.6;
-public static final double KVshooterTop = 0.7;
-public static final double KVshooterBottom = 0.2;
-public static final double KAshooterTop = 2;
-public static final double KAshooterBottom = 0;
+public static final double KVshooterTop = 0.9;
+public static final double KVshooterBottom = 0.5;
+public static final double KAshooterTop = 8;
+public static final double KAshooterBottom = 8;
 
 
 // from 0 to 1

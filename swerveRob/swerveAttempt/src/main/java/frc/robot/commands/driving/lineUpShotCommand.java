@@ -21,7 +21,7 @@ public class lineUpShotCommand extends Command {
   private DoubleSupplier distanceX;
   private DoubleSupplier distanceY;
   private DoubleSupplier theta;
-  double radius = 1.0;
+  double radius = 1.2;
   
   public lineUpShotCommand(SwerveSubsystem dt, DoubleSupplier distanceX,DoubleSupplier distanceY,
   DoubleSupplier theta) {

@@ -53,7 +53,7 @@ import frc.robot.subsystems.shooter;
 public class RobotContainer {
 
     private final SwerveSubsystem swerveSubsystem = new SwerveSubsystem(PathPlannerAuto.getStaringPoseFromAutoFile("1m auto"));
-    private final PDPSubsystem m_pdp = new PDPSubsystem();
+    //private final PDPSubsystem m_pdp = new PDPSubsystem();
     private final XboxController xc = new XboxController(0);
     private final intakeSub m_intake = new intakeSub();
    // private final XboxController xc2 = new XboxController(1);
@@ -96,7 +96,7 @@ public class RobotContainer {
             () -> xc.getLeftY(),
             () -> -xc.getLeftX(),
             () -> -xc.getRightX(),
-            () -> !xc.getLeftStickButton()));
+            () -> !xc.getRightStickButton()));
         
         
         configureButtonBindings();
@@ -115,7 +115,7 @@ public class RobotContainer {
         new JoystickButton(xc, Constants.buttonA).whileTrue(new zeroHeading(swerveSubsystem));
         //new JoystickButton(xc2, Constants.buttonB).toggleOnTrue(new climberUP(m_PneumaticSubsystem));
         //new JoystickButton(xc2, Constants.buttonX).toggleOnTrue(new climbRetrack(m_PneumaticSubsystem));
-        new JoystickButton(xc, Constants.buttonY).whileTrue(new shootSpeaker(m_Shooter));
+        new JoystickButton(xc, Constants.buttonY).onTrue(shoots);
         new JoystickButton(xc, Constants.buttonLB).whileTrue(new Intake(m_intake));
         new JoystickButton(xc, Constants.buttonRB).whileTrue(new extake(m_intake));
         new JoystickButton(xc, Constants.buttonStart).whileTrue(new resetEncodersCommnad(swerveSubsystem));

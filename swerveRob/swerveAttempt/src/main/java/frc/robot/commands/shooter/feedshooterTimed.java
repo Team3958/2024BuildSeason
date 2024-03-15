@@ -18,7 +18,7 @@ public class feedshooterTimed extends ParallelDeadlineGroup {
   public feedshooterTimed(shooter sho, intakeSub in) {
     // Add the deadline command in the super() call. Add other commands using
     // addCommands().
-    super(new timer(3000));
+    super(new timer(1500));
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(new shootSpeaker(sho), new Intake(in));
   }

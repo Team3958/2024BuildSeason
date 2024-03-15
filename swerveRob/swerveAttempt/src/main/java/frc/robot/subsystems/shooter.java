@@ -34,8 +34,10 @@ public class shooter extends SubsystemBase {
   public shooter() {
     config.Voltage.PeakForwardVoltage= Constants.kMaxFlywheelVoltage;
     config.Voltage.PeakReverseVoltage= Constants.kMaxFlywheelVoltage;
-    //config.CurrentLimits.SupplyCurrentLimit = Constants.kMaxFlywheelCurrent;
-    //config.CurrentLimits.SupplyCurrentLimitEnable = true;
+    config.CurrentLimits.SupplyCurrentLimit = Constants.kMaxFlywheelCurrent;
+    config.CurrentLimits.SupplyCurrentLimitEnable = true;
+    config.CurrentLimits.StatorCurrentLimit = Constants.kMaxFlywheelCurrent;
+    config.CurrentLimits.StatorCurrentLimitEnable = true;
     motor__init__(topFlyWheel, Constants.top_flywheel_reversed);
     motor__init__(bottomFlyWheel, Constants.bottom_flywheel_reversed);
     
@@ -54,7 +56,7 @@ public class shooter extends SubsystemBase {
   }
  
   public void shoot(){
-    double velocity= 6;
+    double velocity= 7.5;
     topFlyWheel.setVoltage(shooterffTop.calculate(velocity));//+controller1.calculate(getTopVelocity());
     bottomFlyWheel.setVoltage(shooterffBottom.calculate(velocity));//+controller2.calculate(getBottomVelocity()));
   }

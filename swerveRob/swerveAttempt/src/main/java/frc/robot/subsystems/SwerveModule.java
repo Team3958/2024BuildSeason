@@ -45,19 +45,19 @@ public class SwerveModule {
         absoluteEncoder = new AnalogInput(absoluteEncoderId);
         TalonFXConfiguration driveConfiguration = new TalonFXConfiguration();
         TalonFXConfiguration turninConfiguration = new TalonFXConfiguration();
-        driveConfiguration.Voltage.PeakForwardVoltage = 12;
+        /*driveConfiguration.Voltage.PeakForwardVoltage = 12;
         driveConfiguration.Voltage.PeakReverseVoltage = 12;
-        driveConfiguration.CurrentLimits.StatorCurrentLimit = 9;
-        driveConfiguration.CurrentLimits.SupplyCurrentLimit = 8;
+        driveConfiguration.CurrentLimits.StatorCurrentLimit = 19;
+        driveConfiguration.CurrentLimits.SupplyCurrentLimit = 18;
         driveConfiguration.CurrentLimits.StatorCurrentLimitEnable = true;
         driveConfiguration.CurrentLimits.SupplyCurrentLimitEnable = true;
 
         turninConfiguration.Voltage.PeakForwardVoltage = 8;
         turninConfiguration.Voltage.PeakReverseVoltage = 8;
-        turninConfiguration.CurrentLimits.StatorCurrentLimit = 5;
-        turninConfiguration.CurrentLimits.SupplyCurrentLimit = 6;
+        turninConfiguration.CurrentLimits.StatorCurrentLimit = 15;
+        turninConfiguration.CurrentLimits.SupplyCurrentLimit = 16;
         turninConfiguration.CurrentLimits.StatorCurrentLimitEnable = true;
-        turninConfiguration.CurrentLimits.SupplyCurrentLimitEnable = true;
+        turninConfiguration.CurrentLimits.SupplyCurrentLimitEnable = true;*/
         driveMotor = new TalonFX(driveMotorId);
         turningMotor = new TalonFX(turningMotorId);
         driveMotor.getConfigurator().apply(driveConfiguration);
