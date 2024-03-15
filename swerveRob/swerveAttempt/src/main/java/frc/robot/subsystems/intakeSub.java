@@ -13,7 +13,7 @@ import frc.robot.Constants;
 public class intakeSub extends SubsystemBase {
   /** Creates a new intakeSub. */
   private final TalonFX intakeMot = new TalonFX(Constants.intake);
-  private final SimpleMotorFeedforward ff = new SimpleMotorFeedforward(2.8, 2.5);
+  private final SimpleMotorFeedforward ff = new SimpleMotorFeedforward(3, 3);
   public intakeSub() {}
 
   @Override

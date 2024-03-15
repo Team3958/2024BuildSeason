@@ -37,6 +37,7 @@ public class photonvision extends SubsystemBase {
   /** Creates a new photonvision. */
   double pitch;
   Transform3d pose;
+  double yaw;
   AprilTagFieldLayout aprilTagFieldLayout = AprilTagFields.k2024Crescendo.loadAprilTagLayoutField();
   
   public photonvision() {
@@ -72,6 +73,7 @@ public class photonvision extends SubsystemBase {
     PhotonTrackedTarget target = result.getBestTarget();
     pitch = target.getPitch();
     pose = target.getBestCameraToTarget();
+    yaw = target.getYaw();
     updateShuffleBoard();
   
   }
@@ -84,5 +86,14 @@ public class photonvision extends SubsystemBase {
     SmartDashboard.putNumber("pose x", pose.getX());
     SmartDashboard.putNumber("pose y", pose.getY());
     SmartDashboard.putNumber("pose z", pose.getZ());
+  }
+  public double getX(){
+    return pose.getX();
+  }
+  public double gety(){
+    return pose.getY();
+  }
+  public double getTheta(){
+    return yaw;
   }
 }

@@ -92,10 +92,10 @@ public class SwerveSubsystem extends SubsystemBase {
     private final SwerveDrivePoseEstimator poseEstimator ;
     /*StructArrayPublisher<SwerveModuleState> publisher = NetworkTableInstance.getDefault()
     .getStructArrayTopic("MyStates", SwerveModuleState.struct).publish();*/
-    private final Pose2d initPose = new Pose2d(new Translation2d(2/2,7/2), new Rotation2d());
+    private final Pose2d initPose; //= new Pose2d(new Translation2d(2/2,7/2), new Rotation2d());
      
     
-    public SwerveSubsystem() {
+    public SwerveSubsystem(Pose2d initPose) {
         //poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(0.5,0.5,20));
         new Thread(() -> {
             try {
@@ -104,7 +104,7 @@ public class SwerveSubsystem extends SubsystemBase {
             } catch (Exception e) {
             }
         }).start();
-        //this.initPose = initpose;
+        this.initPose = initPose;
         poseEstimator = new SwerveDrivePoseEstimator(Constants.kDriveKinematics, new Rotation2d(), swerveModPose, initPose);
         AutoBuilder.configureHolonomic(this::getPose, 
         this::resetOdometry, 
@@ -228,7 +228,8 @@ public class SwerveSubsystem extends SubsystemBase {
         backRight.setAutoDesiredState(desiredStates[3]);
     }
     public void setStatesFromChassisSpeeds(ChassisSpeeds speeds){
-        setAutoModuleStates(Constants.kDriveKinematics.toSwerveModuleStates(speeds));
+        ChassisSpeeds p = new ChassisSpeeds(speeds.vxMetersPerSecond, -speeds.vyMetersPerSecond, -speeds.omegaRadiansPerSecond);
+        setModuleStates(Constants.kDriveKinematics.toSwerveModuleStates(p));
     }
     public void reset_encoders(){
         //setModuleStates(restStates);

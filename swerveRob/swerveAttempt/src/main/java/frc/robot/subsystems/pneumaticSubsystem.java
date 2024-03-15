@@ -15,7 +15,7 @@ public class pneumaticSubsystem extends SubsystemBase {
   /** Creates a new pneumaticSubsystem. */
   //Compressor compressor = new Compressor(PneumaticsModuleType.CTREPCM);
   private final DoubleSolenoid climber1 = new DoubleSolenoid(Constants.PCM,PneumaticsModuleType.CTREPCM, 0,1);
-  private final DoubleSolenoid climber2 = new DoubleSolenoid(Constants.PCM,PneumaticsModuleType.CTREPCM, 02,3);
+  private final DoubleSolenoid climber2 = new DoubleSolenoid(Constants.PCM,PneumaticsModuleType.CTREPCM, 2,3);
  
   public pneumaticSubsystem() {
     //compressor.enableDigital();

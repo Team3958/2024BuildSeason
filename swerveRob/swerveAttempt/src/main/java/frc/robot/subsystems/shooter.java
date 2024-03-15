@@ -26,16 +26,16 @@ public class shooter extends SubsystemBase {
   private final TalonFX topFlyWheel = new TalonFX(Constants.top_flywheel);
   private final TalonFX bottomFlyWheel = new TalonFX(Constants.bottom_flywheel);
   private TalonFXConfiguration config = new TalonFXConfiguration();
-  private final SimpleMotorFeedforward shooterffTop = new SimpleMotorFeedforward(Constants.KSshootTop, Constants.KVshooterTop, Constants.KAshooter);
-  private final SimpleMotorFeedforward shooterffBottom = new SimpleMotorFeedforward(Constants.KSshootBottom, Constants.KVshooterBottom, Constants.KAshooter);
+  private final SimpleMotorFeedforward shooterffTop = new SimpleMotorFeedforward(Constants.KSshootTop, Constants.KVshooterTop, Constants.KAshooterTop);
+  private final SimpleMotorFeedforward shooterffBottom = new SimpleMotorFeedforward(Constants.KSshootBottom, Constants.KVshooterBottom, Constants.KAshooterBottom);
   //private final BangBangController controller1 = new BangBangController();
   //\private final BangBangController controller2 = new BangBangController();
 
   public shooter() {
     config.Voltage.PeakForwardVoltage= Constants.kMaxFlywheelVoltage;
     config.Voltage.PeakReverseVoltage= Constants.kMaxFlywheelVoltage;
-    config.CurrentLimits.StatorCurrentLimit = Constants.kMaxFlywheelCurrent;
-    config.CurrentLimits.StatorCurrentLimitEnable = true;
+    //config.CurrentLimits.SupplyCurrentLimit = Constants.kMaxFlywheelCurrent;
+    //config.CurrentLimits.SupplyCurrentLimitEnable = true;
     motor__init__(topFlyWheel, Constants.top_flywheel_reversed);
     motor__init__(bottomFlyWheel, Constants.bottom_flywheel_reversed);
     
@@ -54,18 +54,18 @@ public class shooter extends SubsystemBase {
   }
  
   public void shoot(){
-    double velocity= 2;
+    double velocity= 6;
     topFlyWheel.setVoltage(shooterffTop.calculate(velocity));//+controller1.calculate(getTopVelocity());
     bottomFlyWheel.setVoltage(shooterffBottom.calculate(velocity));//+controller2.calculate(getBottomVelocity()));
   }
 
   public double getTopVelocity(){
     return Units.rotationsToRadians(topFlyWheel.getVelocity().getValueAsDouble())*Constants.WHEELRADIUS
-    /Constants.top_flywheel_ratio;
+    *Constants.top_flywheel_ratio;
   }
   public double getBottomVelocity(){
     return Units.rotationsToRadians(bottomFlyWheel.getVelocity().getValueAsDouble())*Constants.WHEELRADIUS
-    /Constants.bottom_flywheel_ratio;
+    *Constants.bottom_flywheel_ratio;
   }
   public void zero(){
     topFlyWheel.set(0);

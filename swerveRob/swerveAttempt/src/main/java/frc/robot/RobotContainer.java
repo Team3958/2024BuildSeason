@@ -34,6 +34,7 @@ import frc.robot.commands.zeroHeading;
 import frc.robot.commands.climber.climbRetrack;
 import frc.robot.commands.climber.climberUP;
 import frc.robot.commands.driving.drivingCommand;
+import frc.robot.commands.driving.lineUpShotCommand;
 import frc.robot.commands.driving.resetEncodersCommnad;
 import frc.robot.commands.shooter.Intake;
 import frc.robot.commands.shooter.extake;
@@ -45,12 +46,13 @@ import frc.robot.commands.shooter.shootSpeaker;
 import frc.robot.subsystems.PDPSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.subsystems.intakeSub;
+import frc.robot.subsystems.photonvision;
 import frc.robot.subsystems.pneumaticSubsystem;
 import frc.robot.subsystems.shooter;
 
 public class RobotContainer {
 
-    private final SwerveSubsystem swerveSubsystem = new SwerveSubsystem();
+    private final SwerveSubsystem swerveSubsystem = new SwerveSubsystem(PathPlannerAuto.getStaringPoseFromAutoFile("1m auto"));
     private final PDPSubsystem m_pdp = new PDPSubsystem();
     private final XboxController xc = new XboxController(0);
     private final intakeSub m_intake = new intakeSub();
@@ -59,13 +61,15 @@ public class RobotContainer {
     private final SequentialCommandGroup shoots = new SequentialCommandGroup(new rampUpShooter(m_Shooter), new feedshooterTimed(m_Shooter, m_intake));
     //private SwerveControllerCommand controllerCommand;
      //private final pneumaticSubsystem m_PneumaticSubsystem = new pneumaticSubsystem();
-    
+    //private final photonvision m_camera = new photonvision();
     PathPlannerAuto N = new PathPlannerAuto("1m auto");
     //PathfindThenFollowPathHolonomic findPath;
-    Pose2d startPose = PathPlannerAuto.getStaringPoseFromAutoFile("1m auto");
+    
 
     //private final SendableChooser<Command> autoChooser;
 
+
+    //private final Command lineup = new lineUpShotCommand(swerveSubsystem, () -> m_camera.getX(),() -> m_camera.gety(),() -> m_camera.getTheta());
     public RobotContainer() {
         // known way to follow paths
         /*PIDController xController = new PIDController(Constants.xP, 0, 0);
@@ -84,13 +88,15 @@ public class RobotContainer {
         // set swerve drive
         
         
+
+        
         swerveSubsystem.setDefaultCommand(
         new drivingCommand(
             swerveSubsystem,
             () -> xc.getLeftY(),
             () -> -xc.getLeftX(),
             () -> -xc.getRightX(),
-            () -> !xc.getStartButtonPressed()));
+            () -> !xc.getLeftStickButton()));
         
         
         configureButtonBindings();
@@ -119,6 +125,6 @@ public class RobotContainer {
     public Command getAutonomousCommand() {
         //return new shootSpeaker(m_Shooter);
         //swerveSubsystem.zeroHeading();
-        return shoots;
+        return N;
     }
 }

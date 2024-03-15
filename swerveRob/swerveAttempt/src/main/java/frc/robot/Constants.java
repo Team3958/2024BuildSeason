@@ -120,18 +120,20 @@ public static final int PCM = 2;
 //shooter
 public static final int top_flywheel = 13;
 public static final int bottom_flywheel = 21;
-public static final double top_flywheel_ratio = 3.125; // 13.8....
-public static final double bottom_flywheel_ratio = 8.296296;// 18.43
-public static final double kMaxFlywheelVoltage = 11;
+public static final double top_flywheel_ratio = 3.125; 
+public static final double bottom_flywheel_ratio = 8.296296;
+public static final double kMaxFlywheelVoltage = 12.3;
 public static final double kMaxFlywheelCurrent = 45;
 public static final boolean top_flywheel_reversed = false;
 public static final boolean bottom_flywheel_reversed = false;
 public static final int intake = 5;
-public static final double KSshootTop = 2.5;
-public static final double KVshooterTop = 0.6;
-public static final double KSshootBottom = 0.8;
-public static final double KVshooterBottom = 0.6;
-public static final double KAshooter = 2;
+public static final double KSshootTop = 3;
+public static final double KSshootBottom = 1.6;
+public static final double KVshooterTop = 0.7;
+public static final double KVshooterBottom = 0.2;
+public static final double KAshooterTop = 2;
+public static final double KAshooterBottom = 0;
+
 
 // from 0 to 1
 public static final double intake_power = 0.1;

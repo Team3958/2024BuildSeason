@@ -68,16 +68,14 @@ public class drivingCommand extends Command {
 
         // 4. Construct desired chassis speeds
         
-        /*if (fieldOrientedFunction.get()) {
+        if (fieldOrientedFunction.get()) {
             // Relative to field
             chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(
                     xSpeed, ySpeed, turningSpeed, swerveSubsystem.getRotation2d());
         } else {
             // Relative to robot
             chassisSpeeds = new ChassisSpeeds(xSpeed, ySpeed, turningSpeed);
-        }*/
-        chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(
-                    xSpeed, ySpeed, turningSpeed, swerveSubsystem.getRotation2d());
+        }
         SmartDashboard.putNumber("chassis desired speed x", chassisSpeeds.vxMetersPerSecond);
         SmartDashboard.putNumber("chassis speed y", chassisSpeeds.vyMetersPerSecond);
         SmartDashboard.putNumber("chassis turn", chassisSpeeds.omegaRadiansPerSecond);
